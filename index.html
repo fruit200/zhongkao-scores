@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>中考分数线查询 - 好课在线</title>
+    <title>中考分数线查询 & 分数测评 - 好课在线</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -11,379 +11,157 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
-        }
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-        }
-        .header {
-            text-align: center;
-            padding: 30px 0 20px;
-            color: white;
-        }
-        .header h1 {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 8px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-        .header p {
-            font-size: 14px;
-            opacity: 0.85;
-        }
-        .search-box {
-            background: white;
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
-            margin-bottom: 20px;
-        }
-        .search-input-wrap {
-            display: flex;
-            gap: 12px;
-        }
-        .search-input-wrap input {
-            flex: 1;
-            padding: 14px 20px;
-            border: 2px solid #e8e8e8;
-            border-radius: 12px;
-            font-size: 16px;
-            outline: none;
-            transition: border-color 0.3s;
-        }
-        .search-input-wrap input:focus {
-            border-color: #667eea;
-        }
-        .search-input-wrap button {
-            padding: 14px 28px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            white-space: nowrap;
-        }
-        .search-input-wrap button:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(102,126,234,0.4);
-        }
-        .search-input-wrap button:active {
-            transform: translateY(0);
-        }
-        .quick-tags {
-            margin-top: 16px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-        .quick-tags span {
-            font-size: 12px;
-            color: #999;
-            line-height: 28px;
-        }
-        .quick-tag {
-            padding: 4px 12px;
-            background: #f5f5f5;
-            border-radius: 14px;
-            font-size: 13px;
-            color: #555;
-            cursor: pointer;
-            transition: all 0.2s;
-            border: 1px solid transparent;
-        }
-        .quick-tag:hover {
-            background: #eef0ff;
-            color: #667eea;
-            border-color: #667eea;
-        }
-        .suggestions {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-            margin-top: 4px;
-            z-index: 100;
-            display: none;
-            overflow: hidden;
-        }
-        .suggestions.show { display: block; }
-        .suggestion-item {
-            padding: 12px 20px;
-            cursor: pointer;
-            font-size: 14px;
             color: #333;
-            transition: background 0.15s;
-            border-bottom: 1px solid #f5f5f5;
         }
-        .suggestion-item:last-child { border-bottom: none; }
-        .suggestion-item:hover { background: #f8f9ff; }
-        .suggestion-item .province {
-            font-size: 12px;
-            color: #999;
-            margin-left: 8px;
+        .container { max-width: 900px; margin: 0 auto; }
+        .header { text-align: center; padding: 26px 0 18px; color: white; }
+        .header h1 { font-size: 27px; font-weight: 700; margin-bottom: 8px; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .header p { font-size: 14px; opacity: 0.9; }
+        .header .coverage { font-size: 12px; opacity: 0.8; margin-top: 6px; }
+
+        .mode-switch {
+            display: flex; gap: 0; margin: 0 auto 16px; max-width: 360px;
+            background: rgba(255,255,255,0.18); border-radius: 14px; padding: 5px;
         }
+        .mode-switch button {
+            flex: 1; padding: 10px; border: none; background: transparent; color: white;
+            font-size: 15px; font-weight: 600; border-radius: 10px; cursor: pointer; transition: all 0.2s;
+        }
+        .mode-switch button.active { background: white; color: #667eea; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+
+        .card { background: white; border-radius: 16px; padding: 24px; box-shadow: 0 20px 60px rgba(0,0,0,0.15); margin-bottom: 16px; }
+        .search-input-wrap { display: flex; gap: 12px; }
         .search-input-container { position: relative; flex: 1; }
-        .search-input-container input { width: 100%; }
+        .search-input-wrap input {
+            width: 100%; padding: 14px 20px; border: 2px solid #e8e8e8; border-radius: 12px;
+            font-size: 16px; outline: none; transition: border-color 0.3s;
+        }
+        .search-input-wrap input:focus { border-color: #667eea; }
+        .search-input-wrap button.go {
+            padding: 14px 28px; background: linear-gradient(135deg, #667eea, #764ba2); color: white;
+            border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer;
+            transition: transform 0.2s; white-space: nowrap;
+        }
+        .search-input-wrap button.go:hover { transform: translateY(-1px); }
 
-        .results {
-            display: none;
+        .suggestions {
+            position: absolute; top: 100%; left: 0; right: 0; background: white; border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12); margin-top: 4px; z-index: 100; display: none; overflow: hidden;
         }
-        .results.show { display: block; }
-        .city-card {
-            background: white;
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
-            margin-bottom: 16px;
-        }
-        .city-card-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid #f0f0f0;
-        }
-        .city-name {
-            font-size: 22px;
-            font-weight: 700;
-            color: #333;
-        }
-        .city-province {
-            font-size: 13px;
-            color: #999;
-            margin-top: 4px;
-        }
-        .total-score-badge {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 600;
-        }
-        .year-tabs {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-        .year-tab {
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-size: 13px;
-            cursor: pointer;
-            transition: all 0.2s;
-            background: #f5f5f5;
-            color: #666;
-            border: 1px solid transparent;
-        }
-        .year-tab.active {
-            background: #667eea;
-            color: white;
-        }
-        .year-tab:hover:not(.active) {
-            border-color: #667eea;
-            color: #667eea;
-        }
-        .score-lines {
-            display: grid;
-            gap: 12px;
-        }
-        .score-line-item {
-            display: flex;
-            align-items: center;
-            padding: 16px;
-            border-radius: 12px;
-            background: #fafbff;
-            border: 1px solid #eef0ff;
-            transition: transform 0.2s;
-        }
-        .score-line-item:hover {
-            transform: translateX(4px);
-        }
-        .score-line-label {
-            flex: 1;
-            font-size: 14px;
-            color: #555;
-            font-weight: 500;
-        }
-        .score-line-value {
-            font-size: 24px;
-            font-weight: 700;
-            color: #667eea;
-        }
-        .score-line-unit {
-            font-size: 12px;
-            color: #999;
-            margin-left: 4px;
-        }
-        .score-line-bar {
-            height: 4px;
-            background: #e8e8e8;
-            border-radius: 2px;
-            margin-top: 8px;
-            overflow: hidden;
-        }
-        .score-line-bar-fill {
-            height: 100%;
-            border-radius: 2px;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            transition: width 0.6s ease;
-        }
-        .score-detail {
-            flex: 1;
-        }
-        .trend-section {
-            margin-top: 20px;
-            padding-top: 16px;
-            border-top: 1px solid #f0f0f0;
-        }
-        .trend-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 12px;
-        }
-        .trend-chart {
-            display: flex;
-            align-items: flex-end;
-            gap: 4px;
-            height: 80px;
-            padding: 0 4px;
-        }
-        .trend-bar-group {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            height: 100%;
-            justify-content: flex-end;
-        }
-        .trend-bar {
-            width: 100%;
-            max-width: 30px;
-            border-radius: 4px 4px 0 0;
-            transition: height 0.5s ease;
-            position: relative;
-        }
-        .trend-bar.key { background: linear-gradient(180deg, #667eea, #8b9cf7); }
-        .trend-bar.normal { background: linear-gradient(180deg, #a8b5f7, #c5cdfb); }
-        .trend-bar-label {
-            font-size: 10px;
-            color: #999;
-            margin-top: 6px;
-        }
-        .trend-bar-value {
-            font-size: 10px;
-            color: #667eea;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-        .legend {
-            display: flex;
-            gap: 16px;
-            margin-top: 12px;
-            justify-content: center;
-        }
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 12px;
-            color: #666;
-        }
-        .legend-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 3px;
-        }
-        .legend-dot.key { background: #667eea; }
-        .legend-dot.normal { background: #a8b5f7; }
+        .suggestions.show { display: block; max-height: 320px; overflow-y: auto; }
+        .suggestion-item { padding: 11px 20px; cursor: pointer; font-size: 14px; border-bottom: 1px solid #f5f5f5; }
+        .suggestion-item:hover { background: #f8f9ff; }
+        .suggestion-item .province { font-size: 12px; color: #999; margin-left: 8px; }
+        .suggestion-item .flag { font-size: 11px; padding: 1px 7px; border-radius: 8px; margin-left: 6px; }
 
-        .tip-card {
-            background: #fff9e6;
-            border: 1px solid #ffe58f;
-            border-radius: 12px;
-            padding: 16px;
-            margin-top: 16px;
-        }
-        .tip-card-title {
-            font-size: 13px;
-            font-weight: 600;
-            color: #d48806;
-            margin-bottom: 8px;
-        }
-        .tip-card-content {
-            font-size: 13px;
-            color: #8c6e00;
-            line-height: 1.6;
-        }
+        .quick-tags { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+        .quick-tags span { font-size: 12px; color: #999; }
+        .quick-tag { padding: 4px 12px; background: #f5f5f5; border-radius: 14px; font-size: 13px; color: #555; cursor: pointer; transition: all 0.2s; border: 1px solid transparent; }
+        .quick-tag:hover { background: #eef0ff; color: #667eea; border-color: #667eea; }
 
-        .no-result {
-            text-align: center;
-            padding: 60px 20px;
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
-        }
-        .no-result-icon { font-size: 48px; margin-bottom: 16px; }
-        .no-result-text { font-size: 16px; color: #666; margin-bottom: 8px; }
-        .no-result-hint { font-size: 13px; color: #999; }
+        .city-card-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid #f0f0f0; }
+        .city-name { font-size: 22px; font-weight: 700; display: inline-block; vertical-align: middle; }
+        .city-province { font-size: 13px; color: #999; margin-top: 4px; }
+        .badge-row { margin-top: 8px; display: flex; gap: 6px; flex-wrap: wrap; }
+        .conf-badge { font-size: 12px; padding: 3px 10px; border-radius: 12px; font-weight: 600; }
+        .conf-badge.verified { background: #e6f7ed; color: #17a44a; border: 1px solid #b6ebc8; }
+        .conf-badge.mixed { background: #fff4e0; color: #d48806; border: 1px solid #ffe0a3; }
+        .conf-badge.legacy { background: #f0f0f5; color: #8888a0; border: 1px solid #dcdce6; }
+        .conf-badge.pending { background: #fdecec; color: #e05656; border: 1px solid #f7caca; }
+        .total-score-badge { background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; white-space: nowrap; }
 
-        .footer {
-            text-align: center;
-            padding: 20px;
-            color: rgba(255,255,255,0.6);
-            font-size: 12px;
-        }
+        .year-tabs { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+        .year-tab { padding: 6px 14px; border-radius: 18px; font-size: 13px; cursor: pointer; background: #f5f5f5; color: #666; border: 1px solid transparent; transition: all 0.2s; }
+        .year-tab.active { background: #667eea; color: white; }
+        .year-tab.empty { opacity: 0.5; }
+        .year-tab:hover:not(.active) { border-color: #667eea; color: #667eea; }
 
-        .all-cities-section {
-            margin-top: 16px;
-        }
-        .all-cities-title {
-            font-size: 14px;
-            color: rgba(255,255,255,0.8);
-            margin-bottom: 12px;
-            font-weight: 500;
-        }
-        .city-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: 8px;
-        }
-        .city-grid-item {
-            background: rgba(255,255,255,0.15);
-            backdrop-filter: blur(4px);
-            border-radius: 8px;
-            padding: 10px;
-            text-align: center;
-            color: white;
-            font-size: 13px;
-            cursor: pointer;
-            transition: all 0.2s;
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-        .city-grid-item:hover {
-            background: rgba(255,255,255,0.25);
-            transform: translateY(-2px);
-        }
+        .score-lines { display: grid; gap: 12px; }
+        .score-line-item { display: flex; align-items: center; padding: 15px 16px; border-radius: 12px; background: #fafbff; border: 1px solid #eef0ff; }
+        .score-line-label { font-size: 14px; color: #555; font-weight: 500; }
+        .score-detail { flex: 1; }
+        .score-line-value { font-size: 22px; font-weight: 700; color: #667eea; }
+        .score-line-unit { font-size: 12px; color: #999; margin-left: 4px; }
+        .score-line-bar { height: 4px; background: #e8e8e8; border-radius: 2px; margin-top: 8px; overflow: hidden; }
+        .score-line-bar-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg, #667eea, #764ba2); transition: width 0.6s ease; }
+        .src-link { font-size: 11px; color: #999; margin-top: 5px; }
+        .src-link a { color: #8b9cf7; text-decoration: none; }
+
+        .no-data { text-align: center; padding: 24px; color: #999; font-size: 14px; background: #fafafa; border-radius: 12px; line-height: 1.6; }
+        .feedback-link { display: inline-block; margin-top: 10px; font-size: 13px; color: #667eea; cursor: pointer; }
+
+        .trend-section { margin-top: 18px; padding-top: 16px; border-top: 1px solid #f0f0f0; }
+        .trend-title { font-size: 14px; font-weight: 600; color: #333; margin-bottom: 12px; }
+        .trend-chart { display: flex; align-items: flex-end; gap: 6px; height: 90px; padding: 0 4px; }
+        .trend-bar-group { flex: 1; display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; }
+        .trend-bar { width: 100%; max-width: 32px; border-radius: 4px 4px 0 0; background: linear-gradient(180deg, #667eea, #8b9cf7); }
+        .trend-bar-label { font-size: 11px; color: #999; margin-top: 6px; }
+        .trend-bar-value { font-size: 10px; color: #667eea; font-weight: 600; margin-bottom: 4px; }
+
+        .tip-card { background: #fff9e6; border: 1px solid #ffe58f; border-radius: 12px; padding: 14px 16px; margin-top: 16px; }
+        .tip-card-title { font-size: 13px; font-weight: 600; color: #d48806; margin-bottom: 6px; }
+        .tip-card-content { font-size: 13px; color: #8c6e00; line-height: 1.6; }
+
+        .disclaimer { font-size: 12px; color: #e05656; margin-top: 12px; line-height: 1.5; }
+
+        /* 测评 */
+        .calc-field { margin-bottom: 16px; }
+        .calc-field label { display: block; font-size: 14px; color: #555; margin-bottom: 8px; font-weight: 500; }
+        .calc-select { width: 100%; padding: 12px 14px; border: 2px solid #e8e8e8; border-radius: 10px; font-size: 15px; outline: none; background: white; }
+        .calc-select:focus { border-color: #667eea; }
+        .input-mode-switch { display: flex; gap: 8px; margin-bottom: 14px; }
+        .input-mode-switch button { flex: 1; padding: 10px; border: 1px solid #e0e0e0; background: white; border-radius: 10px; font-size: 14px; cursor: pointer; color: #666; transition: all 0.2s; }
+        .input-mode-switch button.active { background: #eef0ff; border-color: #667eea; color: #667eea; font-weight: 600; }
+        .total-input { width: 100%; padding: 14px 16px; border: 2px solid #e8e8e8; border-radius: 10px; font-size: 18px; font-weight: 600; outline: none; }
+        .total-input:focus { border-color: #667eea; }
+        .subj-row { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; }
+        .subj-row input { padding: 10px 12px; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 14px; outline: none; }
+        .subj-row input.name { flex: 1; }
+        .subj-row input.score { width: 90px; text-align: center; }
+        .subj-del { width: 30px; height: 30px; border: none; background: #fdecec; color: #e05656; border-radius: 8px; cursor: pointer; font-size: 16px; flex-shrink: 0; }
+        .subj-add { padding: 8px 14px; border: 1px dashed #667eea; background: #f8f9ff; color: #667eea; border-radius: 8px; font-size: 13px; cursor: pointer; margin-top: 4px; }
+        .subj-sum { font-size: 14px; color: #555; margin: 10px 0 0; font-weight: 600; }
+        .calc-btn { width: 100%; padding: 14px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 8px; }
+        .calc-btn:hover { transform: translateY(-1px); }
+
+        .result-verdict { text-align: center; padding: 22px; border-radius: 14px; margin-bottom: 16px; }
+        .result-verdict.pass-key { background: linear-gradient(135deg, #17a44a, #2ecc71); color: white; }
+        .result-verdict.pass-normal { background: linear-gradient(135deg, #667eea, #8b9cf7); color: white; }
+        .result-verdict.below { background: linear-gradient(135deg, #e05656, #ff7b7b); color: white; }
+        .result-verdict .big { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+        .result-verdict .sub { font-size: 14px; opacity: 0.95; }
+        .gap-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+        .gap-item { background: #fafbff; border: 1px solid #eef0ff; border-radius: 12px; padding: 16px; text-align: center; }
+        .gap-item .lbl { font-size: 13px; color: #888; margin-bottom: 6px; }
+        .gap-item .val { font-size: 24px; font-weight: 700; }
+        .gap-item .val.up { color: #17a44a; }
+        .gap-item .val.down { color: #e05656; }
+        .gap-item .val .suf { font-size: 13px; }
+
+        .tier-list { margin: 4px 0 16px; }
+        .tier-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border-radius: 10px; margin-bottom: 8px; font-size: 14px; }
+        .tier-item.hit { background: #e6f7ed; border: 1px solid #b6ebc8; }
+        .tier-item.miss { background: #fafafa; border: 1px solid #eee; color: #999; }
+        .tier-item .t-name { font-weight: 500; }
+        .tier-item .t-line { color: #666; font-size: 13px; }
+        .tier-item .t-flag { font-size: 12px; font-weight: 600; padding: 2px 10px; border-radius: 10px; }
+        .tier-item.hit .t-flag { background: #17a44a; color: white; }
+        .tier-item.miss .t-flag { background: #e0e0e0; color: #888; }
+        .analysis-card { background: #f8f9ff; border: 1px solid #e8ecff; border-radius: 12px; padding: 16px; margin-bottom: 10px; }
+        .analysis-card h4 { font-size: 14px; color: #667eea; margin-bottom: 8px; }
+        .analysis-card p { font-size: 13px; color: #555; line-height: 1.7; }
+
+        .footer { text-align: center; padding: 20px; color: rgba(255,255,255,0.7); font-size: 12px; }
+        .hidden { display: none; }
 
         @media (max-width: 600px) {
             body { padding: 12px; }
-            .header h1 { font-size: 22px; }
-            .search-box { padding: 16px; }
+            .header h1 { font-size: 21px; }
+            .card { padding: 16px; }
             .search-input-wrap { flex-direction: column; }
-            .search-input-wrap button { width: 100%; }
-            .city-card { padding: 16px; }
+            .search-input-wrap button.go { width: 100%; }
             .score-line-value { font-size: 20px; }
-            .city-grid { grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); }
+            .gap-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -391,2415 +169,363 @@
     <div class="container">
         <div class="header">
             <h1>📊 中考分数线查询</h1>
-            <p>覆盖全国主要城市 | 历年重点线 & 普高线一览</p>
+            <p>全国地级市覆盖 · 历年重点线 & 普高线 + 分数测评</p>
+            <div class="coverage" id="coverageInfo"></div>
         </div>
 
-        <div class="search-box">
-            <div class="search-input-wrap">
-                <div class="search-input-container">
-                    <input type="text" id="searchInput" placeholder="输入城市名称，如：北京、成都、武汉..." autocomplete="off">
-                    <div class="suggestions" id="suggestions"></div>
+        <div class="mode-switch">
+            <button id="modeSearchBtn" class="active" onclick="switchMode('search')">🔍 查分数线</button>
+            <button id="modeCalcBtn" onclick="switchMode('calc')">🧮 分数测评</button>
+        </div>
+
+        <!-- 查分模式 -->
+        <div id="searchMode">
+            <div class="card">
+                <div class="search-input-wrap">
+                    <div class="search-input-container">
+                        <input type="text" id="searchInput" placeholder="输入城市或省份，如：北京、成都、河南..." autocomplete="off">
+                        <div class="suggestions" id="suggestions"></div>
+                    </div>
+                    <button class="go" onclick="doSearch()">查询</button>
                 </div>
-                <button onclick="doSearch()">查询</button>
+                <div class="quick-tags">
+                    <span>热门：</span>
+                    <div class="quick-tag" onclick="quickSearch('北京')">北京</div>
+                    <div class="quick-tag" onclick="quickSearch('上海')">上海</div>
+                    <div class="quick-tag" onclick="quickSearch('广州')">广州</div>
+                    <div class="quick-tag" onclick="quickSearch('深圳')">深圳</div>
+                    <div class="quick-tag" onclick="quickSearch('成都')">成都</div>
+                    <div class="quick-tag" onclick="quickSearch('武汉')">武汉</div>
+                    <div class="quick-tag" onclick="quickSearch('杭州')">杭州</div>
+                    <div class="quick-tag" onclick="quickSearch('郑州')">郑州</div>
+                </div>
             </div>
-            <div class="quick-tags">
-                <span>热门：</span>
-                <div class="quick-tag" onclick="quickSearch('北京')">北京</div>
-                <div class="quick-tag" onclick="quickSearch('上海')">上海</div>
-                <div class="quick-tag" onclick="quickSearch('广州')">广州</div>
-                <div class="quick-tag" onclick="quickSearch('深圳')">深圳</div>
-                <div class="quick-tag" onclick="quickSearch('成都')">成都</div>
-                <div class="quick-tag" onclick="quickSearch('武汉')">武汉</div>
-                <div class="quick-tag" onclick="quickSearch('杭州')">杭州</div>
-                <div class="quick-tag" onclick="quickSearch('南京')">南京</div>
-                <div class="quick-tag" onclick="quickSearch('郑州')">郑州</div>
-                <div class="quick-tag" onclick="quickSearch('西安')">西安</div>
-            </div>
+            <div id="results"></div>
         </div>
 
-        <div class="results" id="results"></div>
+        <!-- 测评模式 -->
+        <div id="calcMode" class="hidden">
+            <div class="card">
+                <div class="calc-field">
+                    <label>选择城市</label>
+                    <input type="text" class="calc-select" id="calcCityInput" list="calcCityList" placeholder="输入或选择城市，如：北京" autocomplete="off" oninput="onCalcCityInput()">
+                    <datalist id="calcCityList"></datalist>
+                </div>
+                <div class="calc-field" id="calcYearField" style="display:none;">
+                    <label>选择年份</label>
+                    <select class="calc-select" id="calcYearSelect" onchange="onCalcYearChange()"></select>
+                </div>
 
-        <div class="all-cities-section" id="allCitiesSection">
-            <div class="all-cities-title">支持查询的城市：</div>
-            <div class="city-grid" id="cityGrid"></div>
+                <div class="input-mode-switch">
+                    <button id="inputTotalBtn" class="active" onclick="switchInputMode('total')">填总分</button>
+                    <button id="inputSubjBtn" onclick="switchInputMode('subject')">填各科分数</button>
+                </div>
+
+                <div id="totalInputArea" class="calc-field">
+                    <label>考生中考总分</label>
+                    <input type="number" class="total-input" id="totalScoreInput" placeholder="输入总分，如：520" min="0">
+                </div>
+
+                <div id="subjectInputArea" class="calc-field hidden">
+                    <label>各科分数（自动累加为总分）</label>
+                    <div id="subjectRows"></div>
+                    <button class="subj-add" onclick="addSubjectRow()">＋ 添加科目</button>
+                    <div class="subj-sum">当前合计：<span id="subjectSum">0</span> 分</div>
+                </div>
+
+                <button class="calc-btn" onclick="doCalc()">开始测评</button>
+            </div>
+            <div id="calcResults"></div>
         </div>
 
         <div class="footer">
-            <p>数据来源：各市教育局公开发布 | 仅供内部参考</p>
-            <p style="margin-top:4px;">如有数据更新需求，请联系培训部</p>
+            <p>数据来源：各市教育局公开公告（见每条分数线下方链接）| 仅供内部参考</p>
+            <p style="margin-top:4px;">标注"待核实"的数据尚未逐条验证，正式引用前请核对官方公告</p>
         </div>
     </div>
 
+    <script src="data.js"></script>
     <script>
-    // ============ 中考分数线数据库 ============
-    const CITY_DATA = [
-        // === 北京 ===
-        {
-            city: "北京", province: "北京市", totalScore: 660,
-            years: [
-                { year: 2024, lines: { "市级示范性高中": 570, "普通高中": 490, "城区普通高中": 500 } },
-                { year: 2023, lines: { "市级示范性高中": 560, "普通高中": 480, "城区普通高中": 490 } },
-                { year: 2022, lines: { "市级示范性高中": 555, "普通高中": 475, "城区普通高中": 485 } },
-                { year: 2021, lines: { "市级示范性高中": 548, "普通高中": 470, "城区普通高中": 480 } }
-            ],
-            tip: "北京中考竞争激烈，海淀、西城等区实际录取线远高于全市最低线。建议结合区排名分析。"
-        },
-        // === 上海 ===
-        {
-            city: "上海", province: "上海市", totalScore: 750,
-            years: [
-                { year: 2024, lines: { "市重点高中": 610, "区重点高中": 560, "普通高中": 500 } },
-                { year: 2023, lines: { "市重点高中": 600, "区重点高中": 550, "普通高中": 490 } },
-                { year: 2022, lines: { "市重点高中": 595, "区重点高中": 545, "普通高中": 485 } },
-                { year: 2021, lines: { "市重点高中": 590, "区重点高中": 540, "普通高中": 480 } }
-            ],
-            tip: "上海实行名额分配到区/到校政策，实际录取分数线因学校而异。四校八大录取线通常在700+。"
-        },
-        // === 广州 ===
-        {
-            city: "广州", province: "广东省", totalScore: 810,
-            years: [
-                { year: 2024, lines: { "示范性高中": 690, "普通高中": 545, "公办普高最低": 480 } },
-                { year: 2023, lines: { "示范性高中": 680, "普通高中": 535, "公办普高最低": 470 } },
-                { year: 2022, lines: { "示范性高中": 670, "普通高中": 520, "公办普高最低": 460 } },
-                { year: 2021, lines: { "示范性高中": 658, "普通高中": 510, "公办普高最低": 450 } }
-            ],
-            tip: "广州中考竞争逐年加剧，普高录取率约60%。华附、省实等名校实际录取线在750+。"
-        },
-        // === 深圳 ===
-        {
-            city: "深圳", province: "广东省", totalScore: 610,
-            years: [
-                { year: 2024, lines: { "四大名校": 570, "八大名校": 545, "普通高中": 460, "公办普高最低": 340 } },
-                { year: 2023, lines: { "四大名校": 565, "八大名校": 540, "普通高中": 455, "公办普高最低": 335 } },
-                { year: 2022, lines: { "四大名校": 560, "八大名校": 530, "普通高中": 440, "公办普高最低": 320 } },
-                { year: 2021, lines: { "四大名校": 555, "八大名校": 520, "普通高中": 430, "公办普高最低": 310 } }
-            ],
-            tip: "深圳普高录取率不到50%，是全国竞争最激烈的城市之一。深中、深实验等四大录取率仅约5%。"
-        },
-        // === 成都 ===
-        {
-            city: "成都", province: "四川省", totalScore: 710,
-            years: [
-                { year: 2024, lines: { "省一级示范性高中(重点线)": 580, "普通高中": 480, "中心城区普高": 500 } },
-                { year: 2023, lines: { "省一级示范性高中(重点线)": 570, "普通高中": 470, "中心城区普高": 490 } },
-                { year: 2022, lines: { "省一级示范性高中(重点线)": 560, "普通高中": 460, "中心城区普高": 480 } },
-                { year: 2021, lines: { "省一级示范性高中(重点线)": 550, "普通高中": 450, "中心城区普高": 470 } }
-            ],
-            tip: "成都四七九（石室、成都七中、树德）录取线通常在640+，重点率约30%。"
-        },
-        // === 武汉 ===
-        {
-            city: "武汉", province: "湖北省", totalScore: 680,
-            years: [
-                { year: 2024, lines: { "省级示范高中": 560, "市级示范高中": 490, "普通高中": 410 } },
-                { year: 2023, lines: { "省级示范高中": 550, "市级示范高中": 480, "普通高中": 400 } },
-                { year: 2022, lines: { "省级示范高中": 540, "市级示范高中": 470, "普通高中": 390 } },
-                { year: 2021, lines: { "省级示范高中": 530, "市级示范高中": 460, "普通高中": 380 } }
-            ],
-            tip: "武汉华师一附中、武汉二中等名校录取线在630+。普高录取率约55%。"
-        },
-        // === 杭州 ===
-        {
-            city: "杭州", province: "浙江省", totalScore: 600,
-            years: [
-                { year: 2024, lines: { "前八所重点": 545, "优质高中": 500, "普通高中": 420 } },
-                { year: 2023, lines: { "前八所重点": 535, "优质高中": 490, "普通高中": 410 } },
-                { year: 2022, lines: { "前八所重点": 530, "优质高中": 485, "普通高中": 400 } },
-                { year: 2021, lines: { "前八所重点": 520, "优质高中": 475, "普通高中": 390 } }
-            ],
-            tip: "杭州前三所（学军、杭高、杭二）录取线约560+。市区普高录取率约60%。"
-        },
-        // === 南京 ===
-        {
-            city: "南京", province: "江苏省", totalScore: 700,
-            years: [
-                { year: 2024, lines: { "四星级高中(重点)": 590, "三星级高中": 520, "普通高中": 450 } },
-                { year: 2023, lines: { "四星级高中(重点)": 580, "三星级高中": 510, "普通高中": 440 } },
-                { year: 2022, lines: { "四星级高中(重点)": 575, "三星级高中": 500, "普通高中": 430 } },
-                { year: 2021, lines: { "四星级高中(重点)": 565, "三星级高中": 490, "普通高中": 420 } }
-            ],
-            tip: "南京南师附中、金陵中学等名校录取线在650+。普高录取率约58%。"
-        },
-        // === 郑州 ===
-        {
-            city: "郑州", province: "河南省", totalScore: 700,
-            years: [
-                { year: 2024, lines: { "省级示范性高中(重点)": 590, "市级示范性高中": 510, "普通高中": 380 } },
-                { year: 2023, lines: { "省级示范性高中(重点)": 580, "市级示范性高中": 500, "普通高中": 370 } },
-                { year: 2022, lines: { "省级示范性高中(重点)": 570, "市级示范性高中": 490, "普通高中": 360 } },
-                { year: 2021, lines: { "省级示范性高中(重点)": 560, "市级示范性高中": 480, "普通高中": 350 } }
-            ],
-            tip: "河南考生基数全国第一，郑州外国语、省实验等名校录取线在650+。普高录取率约50%。"
-        },
-        // === 西安 ===
-        {
-            city: "西安", province: "陕西省", totalScore: 660,
-            years: [
-                { year: 2024, lines: { "省级示范性高中(重点)": 550, "省级标准化高中": 480, "普通高中": 380 } },
-                { year: 2023, lines: { "省级示范性高中(重点)": 540, "省级标准化高中": 470, "普通高中": 370 } },
-                { year: 2022, lines: { "省级示范性高中(重点)": 530, "省级标准化高中": 460, "普通高中": 360 } },
-                { year: 2021, lines: { "省级示范性高中(重点)": 520, "省级标准化高中": 450, "普通高中": 350 } }
-            ],
-            tip: "西安五大名校（西工大附中、铁一中、高新一中、交大附中、陕师大附中）录取线在620+。"
-        },
-        // === 重庆 ===
-        {
-            city: "重庆", province: "重庆市", totalScore: 750,
-            years: [
-                { year: 2024, lines: { "市重点中学(联招线)": 620, "区重点中学": 550, "普通高中": 430 } },
-                { year: 2023, lines: { "市重点中学(联招线)": 610, "区重点中学": 540, "普通高中": 420 } },
-                { year: 2022, lines: { "市重点中学(联招线)": 600, "区重点中学": 530, "普通高中": 410 } },
-                { year: 2021, lines: { "市重点中学(联招线)": 590, "区重点中学": 520, "普通高中": 400 } }
-            ],
-            tip: "重庆七龙珠学校（巴蜀、南开、一中、八中等）实际录取线在680+。联招区普高率约55%。"
-        },
-        // === 天津 ===
-        {
-            city: "天津", province: "天津市", totalScore: 800,
-            years: [
-                { year: 2024, lines: { "市五所重点": 720, "市重点高中": 650, "普通高中": 480 } },
-                { year: 2023, lines: { "市五所重点": 710, "市重点高中": 640, "普通高中": 470 } },
-                { year: 2022, lines: { "市五所重点": 700, "市重点高中": 630, "普通高中": 460 } },
-                { year: 2021, lines: { "市五所重点": 695, "市重点高中": 620, "普通高中": 450 } }
-            ],
-            tip: "天津市五所（南开、耀华、一中、新华、实验）录取率不到5%。天津普高录取率约65%。"
-        },
-        // === 长沙 ===
-        {
-            city: "长沙", province: "湖南省", totalScore: 600,
-            years: [
-                { year: 2024, lines: { "四大名校(5A)": 560, "省级示范性高中": 480, "普通高中": 370 } },
-                { year: 2023, lines: { "四大名校(5A)": 550, "省级示范性高中": 470, "普通高中": 360 } },
-                { year: 2022, lines: { "四大名校(5A)": 545, "省级示范性高中": 460, "普通高中": 350 } },
-                { year: 2021, lines: { "四大名校(5A)": 540, "省级示范性高中": 450, "普通高中": 340 } }
-            ],
-            tip: "长沙四大名校（长郡、雅礼、师大附中、一中）竞争激烈，5A率约15%。普高录取率约55%。"
-        },
-        // === 济南 ===
-        {
-            city: "济南", province: "山东省", totalScore: 660,
-            years: [
-                { year: 2024, lines: { "省实验中学(重点)": 560, "一级普通高中": 480, "普通高中": 360 } },
-                { year: 2023, lines: { "省实验中学(重点)": 550, "一级普通高中": 470, "普通高中": 350 } },
-                { year: 2022, lines: { "省实验中学(重点)": 540, "一级普通高中": 460, "普通高中": 340 } },
-                { year: 2021, lines: { "省实验中学(重点)": 530, "一级普通高中": 450, "普通高中": 330 } }
-            ],
-            tip: "济南省实验、历城二中等名校录取线约580+。山东中考各地市独立命题。"
-        },
-        // === 青岛 ===
-        {
-            city: "青岛", province: "山东省", totalScore: 660,
-            years: [
-                { year: 2024, lines: { "青岛二中(重点)": 560, "一级普通高中": 490, "普通高中": 370 } },
-                { year: 2023, lines: { "青岛二中(重点)": 550, "一级普通高中": 480, "普通高中": 360 } },
-                { year: 2022, lines: { "青岛二中(重点)": 540, "一级普通高中": 470, "普通高中": 350 } },
-                { year: 2021, lines: { "青岛二中(重点)": 535, "一级普通高中": 460, "普通高中": 340 } }
-            ],
-            tip: "青岛二中、五十八中录取线约570+。青岛普高录取率约60%。"
-        },
-        // === 沈阳 ===
-        {
-            city: "沈阳", province: "辽宁省", totalScore: 730,
-            years: [
-                { year: 2024, lines: { "省重点高中": 620, "市重点高中": 540, "普通高中": 400 } },
-                { year: 2023, lines: { "省重点高中": 610, "市重点高中": 530, "普通高中": 390 } },
-                { year: 2022, lines: { "省重点高中": 600, "市重点高中": 520, "普通高中": 380 } },
-                { year: 2021, lines: { "省重点高中": 590, "市重点高中": 510, "普通高中": 370 } }
-            ],
-            tip: "沈阳东北育才、省实验等名校录取线在660+。普高录取率约60%。"
-        },
-        // === 大连 ===
-        {
-            city: "大连", province: "辽宁省", totalScore: 700,
-            years: [
-                { year: 2024, lines: { "省示范性高中(重点)": 600, "一般普通高中": 450, "最低录取控制线": 350 } },
-                { year: 2023, lines: { "省示范性高中(重点)": 590, "一般普通高中": 440, "最低录取控制线": 340 } },
-                { year: 2022, lines: { "省示范性高中(重点)": 580, "一般普通高中": 430, "最低录取控制线": 330 } },
-                { year: 2021, lines: { "省示范性高中(重点)": 570, "一般普通高中": 420, "最低录取控制线": 320 } }
-            ],
-            tip: "大连二十四中、育明高中等录取线在650+。"
-        },
-        // === 哈尔滨 ===
-        {
-            city: "哈尔滨", province: "黑龙江省", totalScore: 560,
-            years: [
-                { year: 2024, lines: { "省重点高中": 470, "市重点高中": 400, "普通高中": 300 } },
-                { year: 2023, lines: { "省重点高中": 460, "市重点高中": 390, "普通高中": 290 } },
-                { year: 2022, lines: { "省重点高中": 450, "市重点高中": 380, "普通高中": 280 } },
-                { year: 2021, lines: { "省重点高中": 440, "市重点高中": 370, "普通高中": 270 } }
-            ],
-            tip: "哈三中、哈师大附中等省重点录取线约500+。"
-        },
-        // === 长春 ===
-        {
-            city: "长春", province: "吉林省", totalScore: 600,
-            years: [
-                { year: 2024, lines: { "省重点高中(推荐线)": 510, "市重点高中": 430, "普通高中": 330 } },
-                { year: 2023, lines: { "省重点高中(推荐线)": 500, "市重点高中": 420, "普通高中": 320 } },
-                { year: 2022, lines: { "省重点高中(推荐线)": 490, "市重点高中": 410, "普通高中": 310 } },
-                { year: 2021, lines: { "省重点高中(推荐线)": 480, "市重点高中": 400, "普通高中": 300 } }
-            ],
-            tip: "东北师大附中、吉大附中、长春一实验等录取线约540+。"
-        },
-        // === 石家庄 ===
-        {
-            city: "石家庄", province: "河北省", totalScore: 610,
-            years: [
-                { year: 2024, lines: { "省级示范性高中(重点)": 530, "市级示范性高中": 450, "普通高中": 340 } },
-                { year: 2023, lines: { "省级示范性高中(重点)": 520, "市级示范性高中": 440, "普通高中": 330 } },
-                { year: 2022, lines: { "省级示范性高中(重点)": 510, "市级示范性高中": 430, "普通高中": 320 } },
-                { year: 2021, lines: { "省级示范性高中(重点)": 500, "市级示范性高中": 420, "普通高中": 310 } }
-            ],
-            tip: "石家庄二中、一中等名校录取线在570+。河北中考竞争激烈，衡水系影响力大。"
-        },
-        // === 太原 ===
-        {
-            city: "太原", province: "山西省", totalScore: 660,
-            years: [
-                { year: 2024, lines: { "省示范高中(重点)": 570, "市示范高中": 480, "普通高中": 360 } },
-                { year: 2023, lines: { "省示范高中(重点)": 560, "市示范高中": 470, "普通高中": 350 } },
-                { year: 2022, lines: { "省示范高中(重点)": 550, "市示范高中": 460, "普通高中": 340 } },
-                { year: 2021, lines: { "省示范高中(重点)": 540, "市示范高中": 450, "普通高中": 330 } }
-            ],
-            tip: "太原五中、省实验等名校录取线在620+。"
-        },
-        // === 合肥 ===
-        {
-            city: "合肥", province: "安徽省", totalScore: 750,
-            years: [
-                { year: 2024, lines: { "省示范高中(重点)": 640, "市示范高中": 560, "普通高中": 450 } },
-                { year: 2023, lines: { "省示范高中(重点)": 630, "市示范高中": 550, "普通高中": 440 } },
-                { year: 2022, lines: { "省示范高中(重点)": 620, "市示范高中": 540, "普通高中": 430 } },
-                { year: 2021, lines: { "省示范高中(重点)": 610, "市示范高中": 530, "普通高中": 420 } }
-            ],
-            tip: "合肥一中、六中、八中(168)录取线约700+。合肥普高录取率约60%。"
-        },
-        // === 福州 ===
-        {
-            city: "福州", province: "福建省", totalScore: 800,
-            years: [
-                { year: 2024, lines: { "省一级达标高中(重点)": 680, "省二级达标高中": 580, "普通高中": 430 } },
-                { year: 2023, lines: { "省一级达标高中(重点)": 670, "省二级达标高中": 570, "普通高中": 420 } },
-                { year: 2022, lines: { "省一级达标高中(重点)": 660, "省二级达标高中": 560, "普通高中": 410 } },
-                { year: 2021, lines: { "省一级达标高中(重点)": 650, "省二级达标高中": 550, "普通高中": 400 } }
-            ],
-            tip: "福州一中、师大附中等录取线在730+。"
-        },
-        // === 厦门 ===
-        {
-            city: "厦门", province: "福建省", totalScore: 800,
-            years: [
-                { year: 2024, lines: { "省一级达标高中(重点)": 690, "省二级达标高中": 590, "普通高中": 440 } },
-                { year: 2023, lines: { "省一级达标高中(重点)": 680, "省二级达标高中": 580, "普通高中": 430 } },
-                { year: 2022, lines: { "省一级达标高中(重点)": 670, "省二级达标高中": 570, "普通高中": 420 } },
-                { year: 2021, lines: { "省一级达标高中(重点)": 660, "省二级达标高中": 560, "普通高中": 410 } }
-            ],
-            tip: "厦门一中、双十中学录取线在740+。厦门普高录取率约55%。"
-        },
-        // === 南昌 ===
-        {
-            city: "南昌", province: "江西省", totalScore: 740,
-            years: [
-                { year: 2024, lines: { "省重点高中": 620, "市重点高中": 530, "普通高中": 400 } },
-                { year: 2023, lines: { "省重点高中": 610, "市重点高中": 520, "普通高中": 390 } },
-                { year: 2022, lines: { "省重点高中": 600, "市重点高中": 510, "普通高中": 380 } },
-                { year: 2021, lines: { "省重点高中": 590, "市重点高中": 500, "普通高中": 370 } }
-            ],
-            tip: "南昌二中、师大附中等名校录取线在680+。"
-        },
-        // === 昆明 ===
-        {
-            city: "昆明", province: "云南省", totalScore: 600,
-            years: [
-                { year: 2024, lines: { "省一级高中(重点)": 530, "省二三级高中": 450, "普通高中": 350 } },
-                { year: 2023, lines: { "省一级高中(重点)": 520, "省二三级高中": 440, "普通高中": 340 } },
-                { year: 2022, lines: { "省一级高中(重点)": 510, "省二三级高中": 430, "普通高中": 330 } },
-                { year: 2021, lines: { "省一级高中(重点)": 500, "省二三级高中": 420, "普通高中": 320 } }
-            ],
-            tip: "云师大附中、昆一中等录取线约560+。"
-        },
-        // === 贵阳 ===
-        {
-            city: "贵阳", province: "贵州省", totalScore: 650,
-            years: [
-                { year: 2024, lines: { "省级示范性高中(重点)": 560, "市级示范性高中": 470, "普通高中": 350 } },
-                { year: 2023, lines: { "省级示范性高中(重点)": 550, "市级示范性高中": 460, "普通高中": 340 } },
-                { year: 2022, lines: { "省级示范性高中(重点)": 540, "市级示范性高中": 450, "普通高中": 330 } },
-                { year: 2021, lines: { "省级示范性高中(重点)": 530, "市级示范性高中": 440, "普通高中": 320 } }
-            ],
-            tip: "贵阳一中、师大附中等名校录取线约600+。"
-        },
-        // === 南宁 ===
-        {
-            city: "南宁", province: "广西壮族自治区", totalScore: 680,
-            years: [
-                { year: 2024, lines: { "自治区示范性高中(重点)": 570, "市示范性高中": 470, "普通高中": 350 } },
-                { year: 2023, lines: { "自治区示范性高中(重点)": 560, "市示范性高中": 460, "普通高中": 340 } },
-                { year: 2022, lines: { "自治区示范性高中(重点)": 550, "市示范性高中": 450, "普通高中": 330 } },
-                { year: 2021, lines: { "自治区示范性高中(重点)": 540, "市示范性高中": 440, "普通高中": 320 } }
-            ],
-            tip: "南宁二中、三中等名校录取线约620+。"
-        },
-        // === 海口 ===
-        {
-            city: "海口", province: "海南省", totalScore: 910,
-            years: [
-                { year: 2024, lines: { "省重点高中(统招)": 780, "省重点高中(统调)": 730, "普通高中": 500 } },
-                { year: 2023, lines: { "省重点高中(统招)": 770, "省重点高中(统调)": 720, "普通高中": 490 } },
-                { year: 2022, lines: { "省重点高中(统招)": 760, "省重点高中(统调)": 710, "普通高中": 480 } },
-                { year: 2021, lines: { "省重点高中(统招)": 750, "省重点高中(统调)": 700, "普通高中": 470 } }
-            ],
-            tip: "海南中学、海口一中等名校录取线约830+。海南中考满分910分(含体育)。"
-        },
-        // === 兰州 ===
-        {
-            city: "兰州", province: "甘肃省", totalScore: 690,
-            years: [
-                { year: 2024, lines: { "省级示范性高中(重点)": 580, "市级示范性高中": 490, "普通高中": 380 } },
-                { year: 2023, lines: { "省级示范性高中(重点)": 570, "市级示范性高中": 480, "普通高中": 370 } },
-                { year: 2022, lines: { "省级示范性高中(重点)": 560, "市级示范性高中": 470, "普通高中": 360 } },
-                { year: 2021, lines: { "省级示范性高中(重点)": 550, "市级示范性高中": 460, "普通高中": 350 } }
-            ],
-            tip: "兰州一中、西北师大附中等名校录取线约630+。"
-        },
-        // === 呼和浩特 ===
-        {
-            city: "呼和浩特", province: "内蒙古自治区", totalScore: 600,
-            years: [
-                { year: 2024, lines: { "自治区示范性高中(重点)": 510, "市示范性高中": 430, "普通高中": 320 } },
-                { year: 2023, lines: { "自治区示范性高中(重点)": 500, "市示范性高中": 420, "普通高中": 310 } },
-                { year: 2022, lines: { "自治区示范性高中(重点)": 490, "市示范性高中": 410, "普通高中": 300 } },
-                { year: 2021, lines: { "自治区示范性高中(重点)": 480, "市示范性高中": 400, "普通高中": 290 } }
-            ],
-            tip: "呼和浩特二中、师大附中等名校录取线约550+。"
-        },
-        // === 银川 ===
-        {
-            city: "银川", province: "宁夏回族自治区", totalScore: 670,
-            years: [
-                { year: 2024, lines: { "重点高中": 570, "普通高中": 420, "最低控制线": 350 } },
-                { year: 2023, lines: { "重点高中": 560, "普通高中": 410, "最低控制线": 340 } },
-                { year: 2022, lines: { "重点高中": 550, "普通高中": 400, "最低控制线": 330 } },
-                { year: 2021, lines: { "重点高中": 540, "普通高中": 390, "最低控制线": 320 } }
-            ],
-            tip: "银川一中、唐徕回中等名校录取线约620+。"
-        },
-        // === 西宁 ===
-        {
-            city: "西宁", province: "青海省", totalScore: 640,
-            years: [
-                { year: 2024, lines: { "示范性高中(重点)": 530, "普通高中": 380, "最低控制线": 300 } },
-                { year: 2023, lines: { "示范性高中(重点)": 520, "普通高中": 370, "最低控制线": 290 } },
-                { year: 2022, lines: { "示范性高中(重点)": 510, "普通高中": 360, "最低控制线": 280 } },
-                { year: 2021, lines: { "示范性高中(重点)": 500, "普通高中": 350, "最低控制线": 270 } }
-            ],
-            tip: "西宁湟川中学、二中等名校录取线约570+。"
-        },
-        // === 乌鲁木齐 ===
-        {
-            city: "乌鲁木齐", province: "新疆维吾尔自治区", totalScore: 600,
-            years: [
-                { year: 2024, lines: { "重点高中(一类)": 520, "普通高中(二类)": 420, "最低控制线": 300 } },
-                { year: 2023, lines: { "重点高中(一类)": 510, "普通高中(二类)": 410, "最低控制线": 290 } },
-                { year: 2022, lines: { "重点高中(一类)": 500, "普通高中(二类)": 400, "最低控制线": 280 } },
-                { year: 2021, lines: { "重点高中(一类)": 490, "普通高中(二类)": 390, "最低控制线": 270 } }
-            ],
-            tip: "乌鲁木齐一中、兵团二中、兵二分校等名校录取线约550+。"
-        },
-        // === 苏州 ===
-        {
-            city: "苏州", province: "江苏省", totalScore: 700,
-            years: [
-                { year: 2024, lines: { "省重点高中(四星级)": 600, "市重点高中": 530, "普通高中": 430 } },
-                { year: 2023, lines: { "省重点高中(四星级)": 590, "市重点高中": 520, "普通高中": 420 } },
-                { year: 2022, lines: { "省重点高中(四星级)": 580, "市重点高中": 510, "普通高中": 410 } },
-                { year: 2021, lines: { "省重点高中(四星级)": 570, "市重点高中": 500, "普通高中": 400 } }
-            ],
-            tip: "苏州中学、昆山中学等录取线在650+。苏州普高录取率约60%。"
-        },
-        // === 无锡 ===
-        {
-            city: "无锡", province: "江苏省", totalScore: 700,
-            years: [
-                { year: 2024, lines: { "省重点高中(四星级)": 590, "市重点高中": 520, "普通高中": 420 } },
-                { year: 2023, lines: { "省重点高中(四星级)": 580, "市重点高中": 510, "普通高中": 410 } },
-                { year: 2022, lines: { "省重点高中(四星级)": 570, "市重点高中": 500, "普通高中": 400 } },
-                { year: 2021, lines: { "省重点高中(四星级)": 560, "市重点高中": 490, "普通高中": 390 } }
-            ],
-            tip: "天一中学、锡山高中等录取线约640+。"
-        },
-        // === 宁波 ===
-        {
-            city: "宁波", province: "浙江省", totalScore: 600,
-            years: [
-                { year: 2024, lines: { "重点高中(效实级)": 545, "优质高中": 490, "普通高中": 400 } },
-                { year: 2023, lines: { "重点高中(效实级)": 535, "优质高中": 480, "普通高中": 390 } },
-                { year: 2022, lines: { "重点高中(效实级)": 525, "优质高中": 470, "普通高中": 380 } },
-                { year: 2021, lines: { "重点高中(效实级)": 515, "优质高中": 460, "普通高中": 370 } }
-            ],
-            tip: "宁波中学、效实中学等录取线约560+。"
-        },
-        // === 佛山 ===
-        {
-            city: "佛山", province: "广东省", totalScore: 720,
-            years: [
-                { year: 2024, lines: { "石门中学级(重点)": 640, "普通高中": 480, "最低控制线": 400 } },
-                { year: 2023, lines: { "石门中学级(重点)": 630, "普通高中": 470, "最低控制线": 390 } },
-                { year: 2022, lines: { "石门中学级(重点)": 620, "普通高中": 460, "最低控制线": 380 } },
-                { year: 2021, lines: { "石门中学级(重点)": 610, "普通高中": 450, "最低控制线": 370 } }
-            ],
-            tip: "石门中学、佛山一中录取线约670+。"
-        },
-        // === 东莞 ===
-        {
-            city: "东莞", province: "广东省", totalScore: 800,
-            years: [
-                { year: 2024, lines: { "重点高中": 680, "普通高中": 520, "最低控制线": 420 } },
-                { year: 2023, lines: { "重点高中": 670, "普通高中": 510, "最低控制线": 410 } },
-                { year: 2022, lines: { "重点高中": 660, "普通高中": 500, "最低控制线": 400 } },
-                { year: 2021, lines: { "重点高中": 650, "普通高中": 490, "最低控制线": 390 } }
-            ],
-            tip: "东莞中学、东华高级中学等录取线约720+。普高录取率约55%。"
-        },
-        // === 厦门 ===  已包含
-        // === 洛阳 ===
-        {
-            city: "洛阳", province: "河南省", totalScore: 700,
-            years: [
-                { year: 2024, lines: { "省示范性高中(重点)": 560, "市示范性高中": 460, "普通高中": 330 } },
-                { year: 2023, lines: { "省示范性高中(重点)": 550, "市示范性高中": 450, "普通高中": 320 } },
-                { year: 2022, lines: { "省示范性高中(重点)": 540, "市示范性高中": 440, "普通高中": 310 } },
-                { year: 2021, lines: { "省示范性高中(重点)": 530, "市示范性高中": 430, "普通高中": 300 } }
-            ],
-            tip: "洛阳一中、理工附中等名校录取线约620+。"
-        },
-        // === 烟台 ===
-        {
-            city: "烟台", province: "山东省", totalScore: 750,
-            years: [
-                { year: 2024, lines: { "重点高中(一中级)": 640, "普通高中": 480, "最低控制线": 350 } },
-                { year: 2023, lines: { "重点高中(一中级)": 630, "普通高中": 470, "最低控制线": 340 } },
-                { year: 2022, lines: { "重点高中(一中级)": 620, "普通高中": 460, "最低控制线": 330 } },
-                { year: 2021, lines: { "重点高中(一中级)": 610, "普通高中": 450, "最低控制线": 320 } }
-            ],
-            tip: "烟台一中、二中等名校录取线约680+。"
-        },
-        // === 温州 ===
-        {
-            city: "温州", province: "浙江省", totalScore: 680,
-            years: [
-                { year: 2024, lines: { "省重点中学": 590, "市重点中学": 510, "普通高中": 400 } },
-                { year: 2023, lines: { "省重点中学": 580, "市重点中学": 500, "普通高中": 390 } },
-                { year: 2022, lines: { "省重点中学": 570, "市重点中学": 490, "普通高中": 380 } },
-                { year: 2021, lines: { "省重点中学": 560, "市重点中学": 480, "普通高中": 370 } }
-            ],
-            tip: "温州中学、乐清中学等录取线约630+。"
-        },
-        // === 徐州 ===
-        {
-            city: "徐州", province: "江苏省", totalScore: 700,
-            years: [
-                { year: 2024, lines: { "四星级高中(重点)": 580, "三星级高中": 490, "普通高中": 380 } },
-                { year: 2023, lines: { "四星级高中(重点)": 570, "三星级高中": 480, "普通高中": 370 } },
-                { year: 2022, lines: { "四星级高中(重点)": 560, "三星级高中": 470, "普通高中": 360 } },
-                { year: 2021, lines: { "四星级高中(重点)": 550, "三星级高中": 460, "普通高中": 350 } }
-            ],
-            tip: "徐州一中、三中等名校录取线约640+。"
-        },
-        // === 潍坊 ===
-        {
-            city: "潍坊", province: "山东省", totalScore: 660,
-            years: [
-                { year: 2024, lines: { "重点高中(一中级)": 560, "普通高中": 400, "最低控制线": 300 } },
-                { year: 2023, lines: { "重点高中(一中级)": 550, "普通高中": 390, "最低控制线": 290 } },
-                { year: 2022, lines: { "重点高中(一中级)": 540, "普通高中": 380, "最低控制线": 280 } },
-                { year: 2021, lines: { "重点高中(一中级)": 530, "普通高中": 370, "最低控制线": 270 } }
-            ],
-            tip: "潍坊一中、寿光一中等录取线约600+。"
-        },
-        // === 常州 ===
-        {
-            city: "常州", province: "江苏省", totalScore: 700,
-            years: [
-                { year: 2024, lines: { "四星级高中(重点)": 590, "三星级高中": 510, "普通高中": 410 } },
-                { year: 2023, lines: { "四星级高中(重点)": 580, "三星级高中": 500, "普通高中": 400 } },
-                { year: 2022, lines: { "四星级高中(重点)": 570, "三星级高中": 490, "普通高中": 390 } },
-                { year: 2021, lines: { "四星级高中(重点)": 560, "三星级高中": 480, "普通高中": 380 } }
-            ],
-            tip: "常州高级中学、北郊高中等录取线约640+。"
-        },
-        // === 芜湖 ===
-        {
-            city: "芜湖", province: "安徽省", totalScore: 760,
-            years: [
-                { year: 2024, lines: { "省示范高中(重点)": 650, "市示范高中": 560, "普通高中": 440 } },
-                { year: 2023, lines: { "省示范高中(重点)": 640, "市示范高中": 550, "普通高中": 430 } },
-                { year: 2022, lines: { "省示范高中(重点)": 630, "市示范高中": 540, "普通高中": 420 } },
-                { year: 2021, lines: { "省示范高中(重点)": 620, "市示范高中": 530, "普通高中": 410 } }
-            ],
-            tip: "芜湖一中、安师大附中等名校录取线约700+。"
-        },
-        // === 泉州 ===
-        {
-            city: "泉州", province: "福建省", totalScore: 800,
-            years: [
-                { year: 2024, lines: { "省一级达标高中": 660, "省二级达标高中": 560, "普通高中": 400 } },
-                { year: 2023, lines: { "省一级达标高中": 650, "省二级达标高中": 550, "普通高中": 390 } },
-                { year: 2022, lines: { "省一级达标高中": 640, "省二级达标高中": 540, "普通高中": 380 } },
-                { year: 2021, lines: { "省一级达标高中": 630, "省二级达标高中": 530, "普通高中": 370 } }
-            ],
-            tip: "泉州五中、七中等名校录取线约720+。"
-        },
-        // === 惠州 ===
-        {
-            city: "惠州", province: "广东省", totalScore: 730,
-            years: [
-                { year: 2024, lines: { "重点高中": 610, "普通高中": 440, "最低控制线": 350 } },
-                { year: 2023, lines: { "重点高中": 600, "普通高中": 430, "最低控制线": 340 } },
-                { year: 2022, lines: { "重点高中": 590, "普通高中": 420, "最低控制线": 330 } },
-                { year: 2021, lines: { "重点高中": 580, "普通高中": 410, "最低控制线": 320 } }
-            ],
-            tip: "惠州一中等名校录取线约660+。"
-        },
-        // === 中山 ===
-        {
-            city: "中山", province: "广东省", totalScore: 680,
-            years: [
-                { year: 2024, lines: { "重点高中": 570, "普通高中": 420, "最低控制线": 330 } },
-                { year: 2023, lines: { "重点高中": 560, "普通高中": 410, "最低控制线": 320 } },
-                { year: 2022, lines: { "重点高中": 550, "普通高中": 400, "最低控制线": 310 } },
-                { year: 2021, lines: { "重点高中": 540, "普通高中": 390, "最低控制线": 300 } }
-            ],
-            tip: "中山纪念中学、一中等录取线约620+。"
-        },
-        // === 珠海 ===
-        {
-            city: "珠海", province: "广东省", totalScore: 600,
-            years: [
-                { year: 2024, lines: { "重点高中": 520, "普通高中": 390, "最低控制线": 310 } },
-                { year: 2023, lines: { "重点高中": 510, "普通高中": 380, "最低控制线": 300 } },
-                { year: 2022, lines: { "重点高中": 500, "普通高中": 370, "最低控制线": 290 } },
-                { year: 2021, lines: { "重点高中": 490, "普通高中": 360, "最低控制线": 280 } }
-            ],
-            tip: "珠海一中、二中等录取线约550+。"
-        },
-        // === 台州 ===
-        {
-            city: "台州", province: "浙江省", totalScore: 600,
-            years: [
-                { year: 2024, lines: { "重点高中": 520, "普通高中": 400, "最低控制线": 310 } },
-                { year: 2023, lines: { "重点高中": 510, "普通高中": 390, "最低控制线": 300 } },
-                { year: 2022, lines: { "重点高中": 500, "普通高中": 380, "最低控制线": 290 } },
-                { year: 2021, lines: { "重点高中": 490, "普通高中": 370, "最低控制线": 280 } }
-            ],
-            tip: "台州一中、温岭中学等录取线约550+。"
-        },
-        // === 绍兴 ===
-        {
-            city: "绍兴", province: "浙江省", totalScore: 600,
-            years: [
-                { year: 2024, lines: { "重点高中": 530, "普通高中": 410, "最低控制线": 320 } },
-                { year: 2023, lines: { "重点高中": 520, "普通高中": 400, "最低控制线": 310 } },
-                { year: 2022, lines: { "重点高中": 510, "普通高中": 390, "最低控制线": 300 } },
-                { year: 2021, lines: { "重点高中": 500, "普通高中": 380, "最低控制线": 290 } }
-            ],
-            tip: "绍兴一中、诸暨中学等录取线约555+。"
-        },
-        // === 嘉兴 ===
-        {
-            city: "嘉兴", province: "浙江省", totalScore: 600,
-            years: [
-                { year: 2024, lines: { "重点高中": 535, "普通高中": 420, "最低控制线": 330 } },
-                { year: 2023, lines: { "重点高中": 525, "普通高中": 410, "最低控制线": 320 } },
-                { year: 2022, lines: { "重点高中": 515, "普通高中": 400, "最低控制线": 310 } },
-                { year: 2021, lines: { "重点高中": 505, "普通高中": 390, "最低控制线": 300 } }
-            ],
-            tip: "嘉兴一中、桐乡高级中学等录取线约555+。"
-        },
-        // === 保定 ===
-        {
-            city: "保定", province: "河北省", totalScore: 610,
-            years: [
-                { year: 2024, lines: { "省级示范性高中(重点)": 520, "市级示范性高中": 430, "普通高中": 320 } },
-                { year: 2023, lines: { "省级示范性高中(重点)": 510, "市级示范性高中": 420, "普通高中": 310 } },
-                { year: 2022, lines: { "省级示范性高中(重点)": 500, "市级示范性高中": 410, "普通高中": 300 } },
-                { year: 2021, lines: { "省级示范性高中(重点)": 490, "市级示范性高中": 400, "普通高中": 290 } }
-            ],
-            tip: "保定一中、三中等名校录取线约560+。"
-        },
-        // === 唐山 ===
-        {
-            city: "唐山", province: "河北省", totalScore: 610,
-            years: [
-                { year: 2024, lines: { "省级示范性高中(重点)": 530, "市级示范性高中": 440, "普通高中": 330 } },
-                { year: 2023, lines: { "省级示范性高中(重点)": 520, "市级示范性高中": 430, "普通高中": 320 } },
-                { year: 2022, lines: { "省级示范性高中(重点)": 510, "市级示范性高中": 420, "普通高中": 310 } },
-                { year: 2021, lines: { "省级示范性高中(重点)": 500, "市级示范性高中": 410, "普通高中": 300 } }
-            ],
-            tip: "唐山一中等名校录取线约570+。"
-        },
-        // === 廊坊 ===
-        {
-            city: "廊坊", province: "河北省", totalScore: 610,
-            years: [
-                { year: 2024, lines: { "省级示范性高中(重点)": 510, "市级示范性高中": 420, "普通高中": 310 } },
-                { year: 2023, lines: { "省级示范性高中(重点)": 500, "市级示范性高中": 410, "普通高中": 300 } },
-                { year: 2022, lines: { "省级示范性高中(重点)": 490, "市级示范性高中": 400, "普通高中": 290 } },
-                { year: 2021, lines: { "省级示范性高中(重点)": 480, "市级示范性高中": 390, "普通高中": 280 } }
-            ],
-            tip: "廊坊一中等名校录取线约555+。靠近北京，教育竞争激烈。"
-        },
-        // === 绵阳 ===
-        {
-            city: "绵阳", province: "四川省", totalScore: 710,
-            years: [
-                { year: 2024, lines: { "国家级示范高中(重点)": 590, "省级示范高中": 510, "普通高中": 390 } },
-                { year: 2023, lines: { "国家级示范高中(重点)": 580, "省级示范高中": 500, "普通高中": 380 } },
-                { year: 2022, lines: { "国家级示范高中(重点)": 570, "省级示范高中": 490, "普通高中": 370 } },
-                { year: 2021, lines: { "国家级示范高中(重点)": 560, "省级示范高中": 480, "普通高中": 360 } }
-            ],
-            tip: "绵阳中学、南山中学、绵阳一中等名校录取线约650+。绵阳是四川教育重镇。"
-        },
-        // === 南阳 ===
-        {
-            city: "南阳", province: "河南省", totalScore: 700,
-            years: [
-                { year: 2024, lines: { "省级示范性高中(重点)": 560, "市级示范性高中": 460, "普通高中": 320 } },
-                { year: 2023, lines: { "省级示范性高中(重点)": 550, "市级示范性高中": 450, "普通高中": 310 } },
-                { year: 2022, lines: { "省级示范性高中(重点)": 540, "市级示范性高中": 440, "普通高中": 300 } },
-                { year: 2021, lines: { "省级示范性高中(重点)": 530, "市级示范性高中": 430, "普通高中": 290 } }
-            ],
-            tip: "南阳一中、五中等名校录取线约620+。"
-        },
-        // === 襄阳 ===
-        {
-            city: "襄阳", province: "湖北省", totalScore: 680,
-            years: [
-                { year: 2024, lines: { "省级示范高中(重点)": 550, "市级示范高中": 460, "普通高中": 340 } },
-                { year: 2023, lines: { "省级示范高中(重点)": 540, "市级示范高中": 450, "普通高中": 330 } },
-                { year: 2022, lines: { "省级示范高中(重点)": 530, "市级示范高中": 440, "普通高中": 320 } },
-                { year: 2021, lines: { "省级示范高中(重点)": 520, "市级示范高中": 430, "普通高中": 310 } }
-            ],
-            tip: "襄阳四中、五中等名校录取线约610+。"
-        },
-        // === 宜昌 ===
-        {
-            city: "宜昌", province: "湖北省", totalScore: 680,
-            years: [
-                { year: 2024, lines: { "省级示范高中(重点)": 540, "市级示范高中": 440, "普通高中": 320 } },
-                { year: 2023, lines: { "省级示范高中(重点)": 530, "市级示范高中": 430, "普通高中": 310 } },
-                { year: 2022, lines: { "省级示范高中(重点)": 520, "市级示范高中": 420, "普通高中": 300 } },
-                { year: 2021, lines: { "省级示范高中(重点)": 510, "市级示范高中": 410, "普通高中": 290 } }
-            ],
-            tip: "宜昌一中等名校录取线约600+。"
-        },
-        // === 赣州 ===
-        {
-            city: "赣州", province: "江西省", totalScore: 740,
-            years: [
-                { year: 2024, lines: { "省重点高中": 600, "市重点高中": 500, "普通高中": 360 } },
-                { year: 2023, lines: { "省重点高中": 590, "市重点高中": 490, "普通高中": 350 } },
-                { year: 2022, lines: { "省重点高中": 580, "市重点高中": 480, "普通高中": 340 } },
-                { year: 2021, lines: { "省重点高中": 570, "市重点高中": 470, "普通高中": 330 } }
-            ],
-            tip: "赣州中学、赣州三中等名校录取线约660+。"
-        },
-        // === 潍坊 === 已包含
-        // === 临沂 ===
-        {
-            city: "临沂", province: "山东省", totalScore: 760,
-            years: [
-                { year: 2024, lines: { "重点高中": 620, "普通高中": 440, "最低控制线": 340 } },
-                { year: 2023, lines: { "重点高中": 610, "普通高中": 430, "最低控制线": 330 } },
-                { year: 2022, lines: { "重点高中": 600, "普通高中": 420, "最低控制线": 320 } },
-                { year: 2021, lines: { "重点高中": 590, "普通高中": 410, "最低控制线": 310 } }
-            ],
-            tip: "临沂一中、二中、沂水一中等录取线约680+。"
-        },
-        // === 漳州 ===
-        {
-            city: "漳州", province: "福建省", totalScore: 800,
-            years: [
-                { year: 2024, lines: { "省一级达标高中": 650, "省二级达标高中": 540, "普通高中": 380 } },
-                { year: 2023, lines: { "省一级达标高中": 640, "省二级达标高中": 530, "普通高中": 370 } },
-                { year: 2022, lines: { "省一级达标高中": 630, "省二级达标高中": 520, "普通高中": 360 } },
-                { year: 2021, lines: { "省一级达标高中": 620, "省二级达标高中": 510, "普通高中": 350 } }
-            ],
-            tip: "漳州一中等名校录取线约710+。"
-        },
-        // === 盐城 ===
-        {
-            city: "盐城", province: "江苏省", totalScore: 700,
-            years: [
-                { year: 2024, lines: { "四星级高中(重点)": 580, "三星级高中": 490, "普通高中": 380 } },
-                { year: 2023, lines: { "四星级高中(重点)": 570, "三星级高中": 480, "普通高中": 370 } },
-                { year: 2022, lines: { "四星级高中(重点)": 560, "三星级高中": 470, "普通高中": 360 } },
-                { year: 2021, lines: { "四星级高中(重点)": 550, "三星级高中": 460, "普通高中": 350 } }
-            ],
-            tip: "盐城中学等名校录取线约640+。"
-        },
-        // === 扬州 ===
-        {
-            city: "扬州", province: "江苏省", totalScore: 700,
-            years: [
-                { year: 2024, lines: { "四星级高中(重点)": 585, "三星级高中": 500, "普通高中": 390 } },
-                { year: 2023, lines: { "四星级高中(重点)": 575, "三星级高中": 490, "普通高中": 380 } },
-                { year: 2022, lines: { "四星级高中(重点)": 565, "三星级高中": 480, "普通高中": 370 } },
-                { year: 2021, lines: { "四星级高中(重点)": 555, "三星级高中": 470, "普通高中": 360 } }
-            ],
-            tip: "扬州中学、宝应中学等名校录取线约640+。"
-        },
-        // === 南通 ===
-        {
-            city: "南通", province: "江苏省", totalScore: 700,
-            years: [
-                { year: 2024, lines: { "四星级高中(重点)": 600, "三星级高中": 520, "普通高中": 420 } },
-                { year: 2023, lines: { "四星级高中(重点)": 590, "三星级高中": 510, "普通高中": 410 } },
-                { year: 2022, lines: { "四星级高中(重点)": 580, "三星级高中": 500, "普通高中": 400 } },
-                { year: 2021, lines: { "四星级高中(重点)": 570, "三星级高中": 490, "普通高中": 390 } }
-            ],
-            tip: "南通中学、如东高级中学、海安中学等录取线约650+。南通教育质量全国闻名。"
-        },
-        // === 镇江 ===
-        {
-            city: "镇江", province: "江苏省", totalScore: 700,
-            years: [
-                { year: 2024, lines: { "四星级高中(重点)": 575, "三星级高中": 485, "普通高中": 375 } },
-                { year: 2023, lines: { "四星级高中(重点)": 565, "三星级高中": 475, "普通高中": 365 } },
-                { year: 2022, lines: { "四星级高中(重点)": 555, "三星级高中": 465, "普通高中": 355 } },
-                { year: 2021, lines: { "四星级高中(重点)": 545, "三星级高中": 455, "普通高中": 345 } }
-            ],
-            tip: "镇江中学、丹阳高级中学等录取线约630+。"
-        },
-        // === 泰州 ===
-        {
-            city: "泰州", province: "江苏省", totalScore: 700,
-            years: [
-                { year: 2024, lines: { "四星级高中(重点)": 580, "三星级高中": 490, "普通高中": 380 } },
-                { year: 2023, lines: { "四星级高中(重点)": 570, "三星级高中": 480, "普通高中": 370 } },
-                { year: 2022, lines: { "四星级高中(重点)": 560, "三星级高中": 470, "普通高中": 360 } },
-                { year: 2021, lines: { "四星级高中(重点)": 550, "三星级高中": 460, "普通高中": 350 } }
-            ],
-            tip: "泰州中学、姜堰中学等录取线约640+。"
-        },
-        // === 芜湖 === 已包含
-        // === 马鞍山 ===
-        {
-            city: "马鞍山", province: "安徽省", totalScore: 760,
-            years: [
-                { year: 2024, lines: { "省示范高中(重点)": 640, "市示范高中": 540, "普通高中": 420 } },
-                { year: 2023, lines: { "省示范高中(重点)": 630, "市示范高中": 530, "普通高中": 410 } },
-                { year: 2022, lines: { "省示范高中(重点)": 620, "市示范高中": 520, "普通高中": 400 } },
-                { year: 2021, lines: { "省示范高中(重点)": 610, "市示范高中": 510, "普通高中": 390 } }
-            ],
-            tip: "马鞍山二中、红星中学等录取线约690+。"
-        },
-        // === 汕头 ===
-        {
-            city: "汕头", province: "广东省", totalScore: 810,
-            years: [
-                { year: 2024, lines: { "重点高中": 660, "普通高中": 490, "最低控制线": 380 } },
-                { year: 2023, lines: { "重点高中": 650, "普通高中": 480, "最低控制线": 370 } },
-                { year: 2022, lines: { "重点高中": 640, "普通高中": 470, "最低控制线": 360 } },
-                { year: 2021, lines: { "重点高中": 630, "普通高中": 460, "最低控制线": 350 } }
-            ],
-            tip: "汕头金山中学、一中等录取线约730+。"
-        },
-        // === 湛江 ===
-        {
-            city: "湛江", province: "广东省", totalScore: 760,
-            years: [
-                { year: 2024, lines: { "重点高中": 620, "普通高中": 450, "最低控制线": 350 } },
-                { year: 2023, lines: { "重点高中": 610, "普通高中": 440, "最低控制线": 340 } },
-                { year: 2022, lines: { "重点高中": 600, "普通高中": 430, "最低控制线": 330 } },
-                { year: 2021, lines: { "重点高中": 590, "普通高中": 420, "最低控制线": 320 } }
-            ],
-            tip: "湛江一中、二中等名校录取线约680+。"
-        },
-        // === 湖州 ===
-        {
-            city: "湖州", province: "浙江省", totalScore: 600,
-            years: [
-                { year: 2024, lines: { "重点高中": 525, "普通高中": 410, "最低控制线": 320 } },
-                { year: 2023, lines: { "重点高中": 515, "普通高中": 400, "最低控制线": 310 } },
-                { year: 2022, lines: { "重点高中": 505, "普通高中": 390, "最低控制线": 300 } },
-                { year: 2021, lines: { "重点高中": 495, "普通高中": 380, "最低控制线": 290 } }
-            ],
-            tip: "湖州中学、德清高级中学等录取线约550+。"
-        },
-        // === 金华 ===
-        {
-            city: "金华", province: "浙江省", totalScore: 600,
-            years: [
-                { year: 2024, lines: { "重点高中": 520, "普通高中": 400, "最低控制线": 310 } },
-                { year: 2023, lines: { "重点高中": 510, "普通高中": 390, "最低控制线": 300 } },
-                { year: 2022, lines: { "重点高中": 500, "普通高中": 380, "最低控制线": 290 } },
-                { year: 2021, lines: { "重点高中": 490, "普通高中": 370, "最低控制线": 280 } }
-            ],
-            tip: "金华一中、义乌中学等录取线约550+。"
-        },
-        // === 衢州 ===
-        {
-            city: "衢州", province: "浙江省", totalScore: 600,
-            years: [
-                { year: 2024, lines: { "重点高中": 510, "普通高中": 390, "最低控制线": 300 } },
-                { year: 2023, lines: { "重点高中": 500, "普通高中": 380, "最低控制线": 290 } },
-                { year: 2022, lines: { "重点高中": 490, "普通高中": 370, "最低控制线": 280 } },
-                { year: 2021, lines: { "重点高中": 480, "普通高中": 360, "最低控制线": 270 } }
-            ],
-            tip: "衢州二中等名校录取线约540+。"
-        },
-        // === 丽水 ===
-        {
-            city: "丽水", province: "浙江省", totalScore: 600,
-            years: [
-                { year: 2024, lines: { "重点高中": 500, "普通高中": 380, "最低控制线": 290 } },
-                { year: 2023, lines: { "重点高中": 490, "普通高中": 370, "最低控制线": 280 } },
-                { year: 2022, lines: { "重点高中": 480, "普通高中": 360, "最低控制线": 270 } },
-                { year: 2021, lines: { "重点高中": 470, "普通高中": 350, "最低控制线": 260 } }
-            ],
-            tip: "丽水中学等名校录取线约530+。"
-        },
-        // === 舟山 ===
-        {
-            city: "舟山", province: "浙江省", totalScore: 600,
-            years: [
-                { year: 2024, lines: { "重点高中": 510, "普通高中": 390, "最低控制线": 300 } },
-                { year: 2023, lines: { "重点高中": 500, "普通高中": 380, "最低控制线": 290 } },
-                { year: 2022, lines: { "重点高中": 490, "普通高中": 370, "最低控制线": 280 } },
-                { year: 2021, lines: { "重点高中": 480, "普通高中": 360, "最低控制线": 270 } }
-            ],
-            tip: "舟山中学等名校录取线约545+。"
-        },
-        // === 吉林 ===
-        {
-            city: "吉林", province: "吉林省", totalScore: 600,
-            years: [
-                { year: 2024, lines: { "重点高中": 500, "普通高中": 360, "最低控制线": 280 } },
-                { year: 2023, lines: { "重点高中": 490, "普通高中": 350, "最低控制线": 270 } },
-                { year: 2022, lines: { "重点高中": 480, "普通高中": 340, "最低控制线": 260 } },
-                { year: 2021, lines: { "重点高中": 470, "普通高中": 330, "最低控制线": 250 } }
-            ],
-            tip: "吉林一中等名校录取线约540+。"
-        },
-        // === 鞍山 ===
-        {
-            city: "鞍山", province: "辽宁省", totalScore: 730,
-            years: [
-                { year: 2024, lines: { "省重点高中": 600, "市重点高中": 500, "普通高中": 380 } },
-                { year: 2023, lines: { "省重点高中": 590, "市重点高中": 490, "普通高中": 370 } },
-                { year: 2022, lines: { "省重点高中": 580, "市重点高中": 480, "普通高中": 360 } },
-                { year: 2021, lines: { "省重点高中": 570, "市重点高中": 470, "普通高中": 350 } }
-            ],
-            tip: "鞍山一中等名校录取线约650+。"
-        },
-        // === 大庆 ===
-        {
-            city: "大庆", province: "黑龙江省", totalScore: 560,
-            years: [
-                { year: 2024, lines: { "重点高中": 470, "普通高中": 330, "最低控制线": 260 } },
-                { year: 2023, lines: { "重点高中": 460, "普通高中": 320, "最低控制线": 250 } },
-                { year: 2022, lines: { "重点高中": 450, "普通高中": 310, "最低控制线": 240 } },
-                { year: 2021, lines: { "重点高中": 440, "普通高中": 300, "最低控制线": 230 } }
-            ],
-            tip: "大庆实验中学、铁人中学等名校录取线约510+。"
-        },
-        // === 包头 ===
-        {
-            city: "包头", province: "内蒙古自治区", totalScore: 600,
-            years: [
-                { year: 2024, lines: { "重点高中": 510, "普通高中": 370, "最低控制线": 280 } },
-                { year: 2023, lines: { "重点高中": 500, "普通高中": 360, "最低控制线": 270 } },
-                { year: 2022, lines: { "重点高中": 490, "普通高中": 350, "最低控制线": 260 } },
-                { year: 2021, lines: { "重点高中": 480, "普通高中": 340, "最低控制线": 250 } }
-            ],
-            tip: "包头九中、一中等名校录取线约545+。"
-        },
-        // === 柳州 ===
-        {
-            city: "柳州", province: "广西壮族自治区", totalScore: 680,
-            years: [
-                { year: 2024, lines: { "自治区示范性高中(重点)": 560, "市示范性高中": 460, "普通高中": 340 } },
-                { year: 2023, lines: { "自治区示范性高中(重点)": 550, "市示范性高中": 450, "普通高中": 330 } },
-                { year: 2022, lines: { "自治区示范性高中(重点)": 540, "市示范性高中": 440, "普通高中": 320 } },
-                { year: 2021, lines: { "自治区示范性高中(重点)": 530, "市示范性高中": 430, "普通高中": 310 } }
-            ],
-            tip: "柳州高级中学、铁一中等名校录取线约610+。"
-        },
-        // === 桂林 ===
-        {
-            city: "桂林", province: "广西壮族自治区", totalScore: 680,
-            years: [
-                { year: 2024, lines: { "自治区示范性高中(重点)": 550, "市示范性高中": 450, "普通高中": 330 } },
-                { year: 2023, lines: { "自治区示范性高中(重点)": 540, "市示范性高中": 440, "普通高中": 320 } },
-                { year: 2022, lines: { "自治区示范性高中(重点)": 530, "市示范性高中": 430, "普通高中": 310 } },
-                { year: 2021, lines: { "自治区示范性高中(重点)": 520, "市示范性高中": 420, "普通高中": 300 } }
-            ],
-            tip: "桂林中学、师大附中等名校录取线约600+。"
-        },
-        // === 遵义 ===
-        {
-            city: "遵义", province: "贵州省", totalScore: 650,
-            years: [
-                { year: 2024, lines: { "省级示范性高中(重点)": 550, "市级示范性高中": 450, "普通高中": 330 } },
-                { year: 2023, lines: { "省级示范性高中(重点)": 540, "市级示范性高中": 440, "普通高中": 320 } },
-                { year: 2022, lines: { "省级示范性高中(重点)": 530, "市级示范性高中": 430, "普通高中": 310 } },
-                { year: 2021, lines: { "省级示范性高中(重点)": 520, "市级示范性高中": 420, "普通高中": 300 } }
-            ],
-            tip: "遵义四中、遵义一中等名校录取线约590+。"
-        },
-        // === 三亚 ===
-        {
-            city: "三亚", province: "海南省", totalScore: 910,
-            years: [
-                { year: 2024, lines: { "省重点高中": 750, "普通高中": 500, "最低控制线": 400 } },
-                { year: 2023, lines: { "省重点高中": 740, "普通高中": 490, "最低控制线": 390 } },
-                { year: 2022, lines: { "省重点高中": 730, "普通高中": 480, "最低控制线": 380 } },
-                { year: 2021, lines: { "省重点高中": 720, "普通高中": 470, "最低控制线": 370 } }
-            ],
-            tip: "三亚一中等名校录取线约800+。"
-        },
-        // === 拉萨 ===
-        {
-            city: "拉萨", province: "西藏自治区", totalScore: 600,
-            years: [
-                { year: 2024, lines: { "重点高中": 480, "普通高中": 330, "最低控制线": 250 } },
-                { year: 2023, lines: { "重点高中": 470, "普通高中": 320, "最低控制线": 240 } },
-                { year: 2022, lines: { "重点高中": 460, "普通高中": 310, "最低控制线": 230 } },
-                { year: 2021, lines: { "重点高中": 450, "普通高中": 300, "最低控制线": 220 } }
-            ],
-            tip: "拉萨中学等名校录取线约520+。"
-        },
-        // === 衡阳 ===
-        {
-            city: "衡阳", province: "湖南省", totalScore: 600,
-            years: [
-                { year: 2024, lines: { "省示范性高中(重点)": 510, "市示范性高中": 420, "普通高中": 310 } },
-                { year: 2023, lines: { "省示范性高中(重点)": 500, "市示范性高中": 410, "普通高中": 300 } },
-                { year: 2022, lines: { "省示范性高中(重点)": 490, "市示范性高中": 400, "普通高中": 290 } },
-                { year: 2021, lines: { "省示范性高中(重点)": 480, "市示范性高中": 390, "普通高中": 280 } }
-            ],
-            tip: "衡阳八中、一中等名校录取线约550+。"
-        },
-        // === 岳阳 ===
-        {
-            city: "岳阳", province: "湖南省", totalScore: 600,
-            years: [
-                { year: 2024, lines: { "省示范性高中(重点)": 520, "市示范性高中": 430, "普通高中": 320 } },
-                { year: 2023, lines: { "省示范性高中(重点)": 510, "市示范性高中": 420, "普通高中": 310 } },
-                { year: 2022, lines: { "省示范性高中(重点)": 500, "市示范性高中": 410, "普通高中": 300 } },
-                { year: 2021, lines: { "省示范性高中(重点)": 490, "市示范性高中": 400, "普通高中": 290 } }
-            ],
-            tip: "岳阳一中、十五中等名校录取线约555+。"
-        },
-        // === 常德 ===
-        {
-            city: "常德", province: "湖南省", totalScore: 600,
-            years: [
-                { year: 2024, lines: { "省示范性高中(重点)": 515, "市示范性高中": 420, "普通高中": 310 } },
-                { year: 2023, lines: { "省示范性高中(重点)": 505, "市示范性高中": 410, "普通高中": 300 } },
-                { year: 2022, lines: { "省示范性高中(重点)": 495, "市示范性高中": 400, "普通高中": 290 } },
-                { year: 2021, lines: { "省示范性高中(重点)": 485, "市示范性高中": 390, "普通高中": 280 } }
-            ],
-            tip: "常德芷兰实验学校、一中等录取线约550+。"
-        },
-        // === 株洲 ===
-        {
-            city: "株洲", province: "湖南省", totalScore: 600,
-            years: [
-                { year: 2024, lines: { "省示范性高中(重点)": 510, "市示范性高中": 420, "普通高中": 310 } },
-                { year: 2023, lines: { "省示范性高中(重点)": 500, "市示范性高中": 410, "普通高中": 300 } },
-                { year: 2022, lines: { "省示范性高中(重点)": 490, "市示范性高中": 400, "普通高中": 290 } },
-                { year: 2021, lines: { "省示范性高中(重点)": 480, "市示范性高中": 390, "普通高中": 280 } }
-            ],
-            tip: "株洲二中、南方中学等录取线约545+。"
-        },
-        // === 湘潭 ===
-        {
-            city: "湘潭", province: "湖南省", totalScore: 600,
-            years: [
-                { year: 2024, lines: { "省示范性高中(重点)": 500, "市示范性高中": 410, "普通高中": 300 } },
-                { year: 2023, lines: { "省示范性高中(重点)": 490, "市示范性高中": 400, "普通高中": 290 } },
-                { year: 2022, lines: { "省示范性高中(重点)": 480, "市示范性高中": 390, "普通高中": 280 } },
-                { year: 2021, lines: { "省示范性高中(重点)": 470, "市示范性高中": 380, "普通高中": 270 } }
-            ],
-            tip: "湘潭一中、湘钢一中等录取线约540+。"
-        },
-        // === 邯郸 ===
-        {
-            city: "邯郸", province: "河北省", totalScore: 610,
-            years: [
-                { year: 2024, lines: { "省级示范性高中(重点)": 520, "市级示范性高中": 430, "普通高中": 310 } },
-                { year: 2023, lines: { "省级示范性高中(重点)": 510, "市级示范性高中": 420, "普通高中": 300 } },
-                { year: 2022, lines: { "省级示范性高中(重点)": 500, "市级示范性高中": 410, "普通高中": 290 } },
-                { year: 2021, lines: { "省级示范性高中(重点)": 490, "市级示范性高中": 400, "普通高中": 280 } }
-            ],
-            tip: "邯郸一中、二中等名校录取线约560+。"
-        },
-        // === 沧州 ===
-        {
-            city: "沧州", province: "河北省", totalScore: 610,
-            years: [
-                { year: 2024, lines: { "省级示范性高中(重点)": 510, "市级示范性高中": 420, "普通高中": 300 } },
-                { year: 2023, lines: { "省级示范性高中(重点)": 500, "市级示范性高中": 410, "普通高中": 290 } },
-                { year: 2022, lines: { "省级示范性高中(重点)": 490, "市级示范性高中": 400, "普通高中": 280 } },
-                { year: 2021, lines: { "省级示范性高中(重点)": 480, "市级示范性高中": 390, "普通高中": 270 } }
-            ],
-            tip: "沧州一中、二中等名校录取线约555+。"
-        },
-        // === 秦皇岛 ===
-        {
-            city: "秦皇岛", province: "河北省", totalScore: 610,
-            years: [
-                { year: 2024, lines: { "省级示范性高中(重点)": 520, "市级示范性高中": 430, "普通高中": 310 } },
-                { year: 2023, lines: { "省级示范性高中(重点)": 510, "市级示范性高中": 420, "普通高中": 300 } },
-                { year: 2022, lines: { "省级示范性高中(重点)": 500, "市级示范性高中": 410, "普通高中": 290 } },
-                { year: 2021, lines: { "省级示范性高中(重点)": 490, "市级示范性高中": 400, "普通高中": 280 } }
-            ],
-            tip: "秦皇岛一中等名校录取线约560+。"
-        },
-        // === 衡水 ===
-        {
-            city: "衡水", province: "河北省", totalScore: 610,
-            years: [
-                { year: 2024, lines: { "省级示范性高中(重点)": 530, "市级示范性高中": 440, "普通高中": 320 } },
-                { year: 2023, lines: { "省级示范性高中(重点)": 520, "市级示范性高中": 430, "普通高中": 310 } },
-                { year: 2022, lines: { "省级示范性高中(重点)": 510, "市级示范性高中": 420, "普通高中": 300 } },
-                { year: 2021, lines: { "省级示范性高中(重点)": 500, "市级示范性高中": 410, "普通高中": 290 } }
-            ],
-            tip: "衡水中学、二中等名校录取线约575+。衡水教育模式全国知名，竞争极其激烈。"
-        },
-        // === 邢台 ===
-        {
-            city: "邢台", province: "河北省", totalScore: 610,
-            years: [
-                { year: 2024, lines: { "省级示范性高中(重点)": 500, "市级示范性高中": 410, "普通高中": 290 } },
-                { year: 2023, lines: { "省级示范性高中(重点)": 490, "市级示范性高中": 400, "普通高中": 280 } },
-                { year: 2022, lines: { "省级示范性高中(重点)": 480, "市级示范性高中": 390, "普通高中": 270 } },
-                { year: 2021, lines: { "省级示范性高中(重点)": 470, "市级示范性高中": 380, "普通高中": 260 } }
-            ],
-            tip: "邢台一中、二中等名校录取线约545+。"
-        },
-        // === 张家口 ===
-        {
-            city: "张家口", province: "河北省", totalScore: 610,
-            years: [
-                { year: 2024, lines: { "省级示范性高中(重点)": 500, "市级示范性高中": 410, "普通高中": 290 } },
-                { year: 2023, lines: { "省级示范性高中(重点)": 490, "市级示范性高中": 400, "普通高中": 280 } },
-                { year: 2022, lines: { "省级示范性高中(重点)": 480, "市级示范性高中": 390, "普通高中": 270 } },
-                { year: 2021, lines: { "省级示范性高中(重点)": 470, "市级示范性高中": 380, "普通高中": 260 } }
-            ],
-            tip: "张家口一中等名校录取线约545+。"
-        },
-        // === 承德 ===
-        {
-            city: "承德", province: "河北省", totalScore: 610,
-            years: [
-                { year: 2024, lines: { "省级示范性高中(重点)": 500, "市级示范性高中": 410, "普通高中": 290 } },
-                { year: 2023, lines: { "省级示范性高中(重点)": 490, "市级示范性高中": 400, "普通高中": 280 } },
-                { year: 2022, lines: { "省级示范性高中(重点)": 480, "市级示范性高中": 390, "普通高中": 270 } },
-                { year: 2021, lines: { "省级示范性高中(重点)": 470, "市级示范性高中": 380, "普通高中": 260 } }
-            ],
-            tip: "承德一中等名校录取线约545+。"
-        },
-        // === 大同 ===
-        {
-            city: "大同", province: "山西省", totalScore: 660,
-            years: [
-                { year: 2024, lines: { "省示范高中(重点)": 550, "市示范高中": 450, "普通高中": 330 } },
-                { year: 2023, lines: { "省示范高中(重点)": 540, "市示范高中": 440, "普通高中": 320 } },
-                { year: 2022, lines: { "省示范高中(重点)": 530, "市示范高中": 430, "普通高中": 310 } },
-                { year: 2021, lines: { "省示范高中(重点)": 520, "市示范高中": 420, "普通高中": 300 } }
-            ],
-            tip: "大同一中等名校录取线约600+。"
-        },
-        // === 运城 ===
-        {
-            city: "运城", province: "山西省", totalScore: 660,
-            years: [
-                { year: 2024, lines: { "省示范高中(重点)": 545, "市示范高中": 440, "普通高中": 320 } },
-                { year: 2023, lines: { "省示范高中(重点)": 535, "市示范高中": 430, "普通高中": 310 } },
-                { year: 2022, lines: { "省示范高中(重点)": 525, "市示范高中": 420, "普通高中": 300 } },
-                { year: 2021, lines: { "省示范高中(重点)": 515, "市示范高中": 410, "普通高中": 290 } }
-            ],
-            tip: "运城中学、康杰中学等名校录取线约600+。"
-        },
-        // === 临汾 ===
-        {
-            city: "临汾", province: "山西省", totalScore: 660,
-            years: [
-                { year: 2024, lines: { "省示范高中(重点)": 550, "市示范高中": 445, "普通高中": 325 } },
-                { year: 2023, lines: { "省示范高中(重点)": 540, "市示范高中": 435, "普通高中": 315 } },
-                { year: 2022, lines: { "省示范高中(重点)": 530, "市示范高中": 425, "普通高中": 305 } },
-                { year: 2021, lines: { "省示范高中(重点)": 520, "市示范高中": 415, "普通高中": 295 } }
-            ],
-            tip: "临汾一中、三中等名校录取线约600+。"
-        },
-        // === 晋中 ===
-        {
-            city: "晋中", province: "山西省", totalScore: 660,
-            years: [
-                { year: 2024, lines: { "省示范高中(重点)": 545, "市示范高中": 440, "普通高中": 320 } },
-                { year: 2023, lines: { "省示范高中(重点)": 535, "市示范高中": 430, "普通高中": 310 } },
-                { year: 2022, lines: { "省示范高中(重点)": 525, "市示范高中": 420, "普通高中": 300 } },
-                { year: 2021, lines: { "省示范高中(重点)": 515, "市示范高中": 410, "普通高中": 290 } }
-            ],
-            tip: "榆次一中等名校录取线约590+。"
-        },
-        // === 长治 ===
-        {
-            city: "长治", province: "山西省", totalScore: 660,
-            years: [
-                { year: 2024, lines: { "省示范高中(重点)": 550, "市示范高中": 445, "普通高中": 325 } },
-                { year: 2023, lines: { "省示范高中(重点)": 540, "市示范高中": 435, "普通高中": 315 } },
-                { year: 2022, lines: { "省示范高中(重点)": 530, "市示范高中": 425, "普通高中": 305 } },
-                { year: 2021, lines: { "省示范高中(重点)": 520, "市示范高中": 415, "普通高中": 295 } }
-            ],
-            tip: "长治一中、二中等名校录取线约600+。"
-        },
-        // === 宝鸡 ===
-        {
-            city: "宝鸡", province: "陕西省", totalScore: 660,
-            years: [
-                { year: 2024, lines: { "省级示范性高中(重点)": 540, "省级标准化高中": 460, "普通高中": 340 } },
-                { year: 2023, lines: { "省级示范性高中(重点)": 530, "省级标准化高中": 450, "普通高中": 330 } },
-                { year: 2022, lines: { "省级示范性高中(重点)": 520, "省级标准化高中": 440, "普通高中": 320 } },
-                { year: 2021, lines: { "省级示范性高中(重点)": 510, "省级标准化高中": 430, "普通高中": 310 } }
-            ],
-            tip: "宝鸡中学、斗鸡中学等名校录取线约590+。"
-        },
-        // === 咸阳 ===
-        {
-            city: "咸阳", province: "陕西省", totalScore: 660,
-            years: [
-                { year: 2024, lines: { "省级示范性高中(重点)": 535, "省级标准化高中": 450, "普通高中": 330 } },
-                { year: 2023, lines: { "省级示范性高中(重点)": 525, "省级标准化高中": 440, "普通高中": 320 } },
-                { year: 2022, lines: { "省级示范性高中(重点)": 515, "省级标准化高中": 430, "普通高中": 310 } },
-                { year: 2021, lines: { "省级示范性高中(重点)": 505, "省级标准化高中": 420, "普通高中": 300 } }
-            ],
-            tip: "咸阳中学、彩虹中学等名校录取线约585+。"
-        },
-        // === 渭南 ===
-        {
-            city: "渭南", province: "陕西省", totalScore: 660,
-            years: [
-                { year: 2024, lines: { "省级示范性高中(重点)": 530, "省级标准化高中": 440, "普通高中": 320 } },
-                { year: 2023, lines: { "省级示范性高中(重点)": 520, "省级标准化高中": 430, "普通高中": 310 } },
-                { year: 2022, lines: { "省级示范性高中(重点)": 510, "省级标准化高中": 420, "普通高中": 300 } },
-                { year: 2021, lines: { "省级示范性高中(重点)": 500, "省级标准化高中": 410, "普通高中": 290 } }
-            ],
-            tip: "渭南高级中学、瑞泉中学等名校录取线约580+。"
-        },
-        // === 榆林 ===
-        {
-            city: "榆林", province: "陕西省", totalScore: 660,
-            years: [
-                { year: 2024, lines: { "省级示范性高中(重点)": 535, "省级标准化高中": 445, "普通高中": 325 } },
-                { year: 2023, lines: { "省级示范性高中(重点)": 525, "省级标准化高中": 435, "普通高中": 315 } },
-                { year: 2022, lines: { "省级示范性高中(重点)": 515, "省级标准化高中": 425, "普通高中": 305 } },
-                { year: 2021, lines: { "省级示范性高中(重点)": 505, "省级标准化高中": 415, "普通高中": 295 } }
-            ],
-            tip: "榆林中学、一中等名校录取线约585+。"
-        },
-        // === 延安 ===
-        {
-            city: "延安", province: "陕西省", totalScore: 660,
-            years: [
-                { year: 2024, lines: { "省级示范性高中(重点)": 520, "省级标准化高中": 430, "普通高中": 310 } },
-                { year: 2023, lines: { "省级示范性高中(重点)": 510, "省级标准化高中": 420, "普通高中": 300 } },
-                { year: 2022, lines: { "省级示范性高中(重点)": 500, "省级标准化高中": 410, "普通高中": 290 } },
-                { year: 2021, lines: { "省级示范性高中(重点)": 490, "省级标准化高中": 400, "普通高中": 280 } }
-            ],
-            tip: "延安中学等名校录取线约570+。"
-        },
-        // === 汉中 ===
-        {
-            city: "汉中", province: "陕西省", totalScore: 660,
-            years: [
-                { year: 2024, lines: { "省级示范性高中(重点)": 530, "省级标准化高中": 440, "普通高中": 320 } },
-                { year: 2023, lines: { "省级示范性高中(重点)": 520, "省级标准化高中": 430, "普通高中": 310 } },
-                { year: 2022, lines: { "省级示范性高中(重点)": 510, "省级标准化高中": 420, "普通高中": 300 } },
-                { year: 2021, lines: { "省级示范性高中(重点)": 500, "省级标准化高中": 410, "普通高中": 290 } }
-            ],
-            tip: "汉中中学、龙岗学校等名校录取线约580+。"
-        },
-        // === 南阳 ===  已包含
-        // === 开封 ===
-        {
-            city: "开封", province: "河南省", totalScore: 700,
-            years: [
-                { year: 2024, lines: { "省级示范性高中(重点)": 550, "市级示范性高中": 450, "普通高中": 310 } },
-                { year: 2023, lines: { "省级示范性高中(重点)": 540, "市级示范性高中": 440, "普通高中": 300 } },
-                { year: 2022, lines: { "省级示范性高中(重点)": 530, "市级示范性高中": 430, "普通高中": 290 } },
-                { year: 2021, lines: { "省级示范性高中(重点)": 520, "市级示范性高中": 420, "普通高中": 280 } }
-            ],
-            tip: "开封高中、河大附中等名校录取线约610+。"
-        },
-        // === 新乡 ===
-        {
-            city: "新乡", province: "河南省", totalScore: 700,
-            years: [
-                { year: 2024, lines: { "省级示范性高中(重点)": 555, "市级示范性高中": 450, "普通高中": 310 } },
-                { year: 2023, lines: { "省级示范性高中(重点)": 545, "市级示范性高中": 440, "普通高中": 300 } },
-                { year: 2022, lines: { "省级示范性高中(重点)": 535, "市级示范性高中": 430, "普通高中": 290 } },
-                { year: 2021, lines: { "省级示范性高中(重点)": 525, "市级示范性高中": 420, "普通高中": 280 } }
-            ],
-            tip: "新乡一中、河师大附中等名校录取线约615+。"
-        },
-        // === 许昌 ===
-        {
-            city: "许昌", province: "河南省", totalScore: 700,
-            years: [
-                { year: 2024, lines: { "省级示范性高中(重点)": 555, "市级示范性高中": 450, "普通高中": 310 } },
-                { year: 2023, lines: { "省级示范性高中(重点)": 545, "市级示范性高中": 440, "普通高中": 300 } },
-                { year: 2022, lines: { "省级示范性高中(重点)": 535, "市级示范性高中": 430, "普通高中": 290 } },
-                { year: 2021, lines: { "省级示范性高中(重点)": 525, "市级示范性高中": 420, "普通高中": 280 } }
-            ],
-            tip: "许昌高中等名校录取线约615+。"
-        },
-        // === 平顶山 ===
-        {
-            city: "平顶山", province: "河南省", totalScore: 700,
-            years: [
-                { year: 2024, lines: { "省级示范性高中(重点)": 545, "市级示范性高中": 440, "普通高中": 300 } },
-                { year: 2023, lines: { "省级示范性高中(重点)": 535, "市级示范性高中": 430, "普通高中": 290 } },
-                { year: 2022, lines: { "省级示范性高中(重点)": 525, "市级示范性高中": 420, "普通高中": 280 } },
-                { year: 2021, lines: { "省级示范性高中(重点)": 515, "市级示范性高中": 410, "普通高中": 270 } }
-            ],
-            tip: "平顶山一中、二中等名校录取线约605+。"
-        },
-        // === 安阳 ===
-        {
-            city: "安阳", province: "河南省", totalScore: 700,
-            years: [
-                { year: 2024, lines: { "省级示范性高中(重点)": 550, "市级示范性高中": 445, "普通高中": 305 } },
-                { year: 2023, lines: { "省级示范性高中(重点)": 540, "市级示范性高中": 435, "普通高中": 295 } },
-                { year: 2022, lines: { "省级示范性高中(重点)": 530, "市级示范性高中": 425, "普通高中": 285 } },
-                { year: 2021, lines: { "省级示范性高中(重点)": 520, "市级示范性高中": 415, "普通高中": 275 } }
-            ],
-            tip: "安阳一中等名校录取线约610+。"
-        },
-        // === 焦作 ===
-        {
-            city: "焦作", province: "河南省", totalScore: 700,
-            years: [
-                { year: 2024, lines: { "省级示范性高中(重点)": 550, "市级示范性高中": 445, "普通高中": 305 } },
-                { year: 2023, lines: { "省级示范性高中(重点)": 540, "市级示范性高中": 435, "普通高中": 295 } },
-                { year: 2022, lines: { "省级示范性高中(重点)": 530, "市级示范性高中": 425, "普通高中": 285 } },
-                { year: 2021, lines: { "省级示范性高中(重点)": 520, "市级示范性高中": 415, "普通高中": 275 } }
-            ],
-            tip: "焦作一中、十一中等名校录取线约610+。"
-        },
-        // === 商丘 ===
-        {
-            city: "商丘", province: "河南省", totalScore: 700,
-            years: [
-                { year: 2024, lines: { "省级示范性高中(重点)": 540, "市级示范性高中": 435, "普通高中": 295 } },
-                { year: 2023, lines: { "省级示范性高中(重点)": 530, "市级示范性高中": 425, "普通高中": 285 } },
-                { year: 2022, lines: { "省级示范性高中(重点)": 520, "市级示范性高中": 415, "普通高中": 275 } },
-                { year: 2021, lines: { "省级示范性高中(重点)": 510, "市级示范性高中": 405, "普通高中": 265 } }
-            ],
-            tip: "商丘一中等名校录取线约600+。"
-        },
-        // === 信阳 ===
-        {
-            city: "信阳", province: "河南省", totalScore: 700,
-            years: [
-                { year: 2024, lines: { "省级示范性高中(重点)": 545, "市级示范性高中": 440, "普通高中": 300 } },
-                { year: 2023, lines: { "省级示范性高中(重点)": 535, "市级示范性高中": 430, "普通高中": 290 } },
-                { year: 2022, lines: { "省级示范性高中(重点)": 525, "市级示范性高中": 420, "普通高中": 280 } },
-                { year: 2021, lines: { "省级示范性高中(重点)": 515, "市级示范性高中": 410, "普通高中": 270 } }
-            ],
-            tip: "信阳高中、二高等名校录取线约605+。"
-        },
-        // === 周口 ===
-        {
-            city: "周口", province: "河南省", totalScore: 700,
-            years: [
-                { year: 2024, lines: { "省级示范性高中(重点)": 535, "市级示范性高中": 430, "普通高中": 290 } },
-                { year: 2023, lines: { "省级示范性高中(重点)": 525, "市级示范性高中": 420, "普通高中": 280 } },
-                { year: 2022, lines: { "省级示范性高中(重点)": 515, "市级示范性高中": 410, "普通高中": 270 } },
-                { year: 2021, lines: { "省级示范性高中(重点)": 505, "市级示范性高中": 400, "普通高中": 260 } }
-            ],
-            tip: "周口一高等名校录取线约595+。"
-        },
-        // === 驻马店 ===
-        {
-            city: "驻马店", province: "河南省", totalScore: 700,
-            years: [
-                { year: 2024, lines: { "省级示范性高中(重点)": 535, "市级示范性高中": 430, "普通高中": 290 } },
-                { year: 2023, lines: { "省级示范性高中(重点)": 525, "市级示范性高中": 420, "普通高中": 280 } },
-                { year: 2022, lines: { "省级示范性高中(重点)": 515, "市级示范性高中": 410, "普通高中": 270 } },
-                { year: 2021, lines: { "省级示范性高中(重点)": 505, "市级示范性高中": 400, "普通高中": 260 } }
-            ],
-            tip: "驻马店高中等名校录取线约595+。"
-        },
-        // === 宜昌 === 已包含
-        // === 黄冈 ===
-        {
-            city: "黄冈", province: "湖北省", totalScore: 680,
-            years: [
-                { year: 2024, lines: { "省级示范高中(重点)": 540, "市级示范高中": 440, "普通高中": 310 } },
-                { year: 2023, lines: { "省级示范高中(重点)": 530, "市级示范高中": 430, "普通高中": 300 } },
-                { year: 2022, lines: { "省级示范高中(重点)": 520, "市级示范高中": 420, "普通高中": 290 } },
-                { year: 2021, lines: { "省级示范高中(重点)": 510, "市级示范高中": 410, "普通高中": 280 } }
-            ],
-            tip: "黄冈中学是全国名校，录取线约600+。黄冈教育质量全国闻名。"
-        },
-        // === 荆州 ===
-        {
-            city: "荆州", province: "湖北省", totalScore: 680,
-            years: [
-                { year: 2024, lines: { "省级示范高中(重点)": 535, "市级示范高中": 435, "普通高中": 305 } },
-                { year: 2023, lines: { "省级示范高中(重点)": 525, "市级示范高中": 425, "普通高中": 295 } },
-                { year: 2022, lines: { "省级示范高中(重点)": 515, "市级示范高中": 415, "普通高中": 285 } },
-                { year: 2021, lines: { "省级示范高中(重点)": 505, "市级示范高中": 405, "普通高中": 275 } }
-            ],
-            tip: "荆州中学、沙市中学等名校录取线约595+。"
-        },
-        // === 十堰 ===
-        {
-            city: "十堰", province: "湖北省", totalScore: 680,
-            years: [
-                { year: 2024, lines: { "省级示范高中(重点)": 530, "市级示范高中": 430, "普通高中": 300 } },
-                { year: 2023, lines: { "省级示范高中(重点)": 520, "市级示范高中": 420, "普通高中": 290 } },
-                { year: 2022, lines: { "省级示范高中(重点)": 510, "市级示范高中": 410, "普通高中": 280 } },
-                { year: 2021, lines: { "省级示范高中(重点)": 500, "市级示范高中": 400, "普通高中": 270 } }
-            ],
-            tip: "十堰一中、郧阳中学等名校录取线约590+。"
-        },
-        // === 孝感 ===
-        {
-            city: "孝感", province: "湖北省", totalScore: 680,
-            years: [
-                { year: 2024, lines: { "省级示范高中(重点)": 530, "市级示范高中": 430, "普通高中": 300 } },
-                { year: 2023, lines: { "省级示范高中(重点)": 520, "市级示范高中": 420, "普通高中": 290 } },
-                { year: 2022, lines: { "省级示范高中(重点)": 510, "市级示范高中": 410, "普通高中": 280 } },
-                { year: 2021, lines: { "省级示范高中(重点)": 500, "市级示范高中": 400, "普通高中": 270 } }
-            ],
-            tip: "孝感高中等名校录取线约590+。"
-        },
-        // === 黄石 ===
-        {
-            city: "黄石", province: "湖北省", totalScore: 680,
-            years: [
-                { year: 2024, lines: { "省级示范高中(重点)": 540, "市级示范高中": 440, "普通高中": 310 } },
-                { year: 2023, lines: { "省级示范高中(重点)": 530, "市级示范高中": 430, "普通高中": 300 } },
-                { year: 2022, lines: { "省级示范高中(重点)": 520, "市级示范高中": 420, "普通高中": 290 } },
-                { year: 2021, lines: { "省级示范高中(重点)": 510, "市级示范高中": 410, "普通高中": 280 } }
-            ],
-            tip: "黄石二中、三中等名校录取线约600+。"
-        },
-        // === 九江 ===
-        {
-            city: "九江", province: "江西省", totalScore: 740,
-            years: [
-                { year: 2024, lines: { "省重点高中": 610, "市重点高中": 510, "普通高中": 370 } },
-                { year: 2023, lines: { "省重点高中": 600, "市重点高中": 500, "普通高中": 360 } },
-                { year: 2022, lines: { "省重点高中": 590, "市重点高中": 490, "普通高中": 350 } },
-                { year: 2021, lines: { "省重点高中": 580, "市重点高中": 480, "普通高中": 340 } }
-            ],
-            tip: "九江一中、同文中学等名校录取线约670+。"
-        },
-        // === 宜春 ===
-        {
-            city: "宜春", province: "江西省", totalScore: 740,
-            years: [
-                { year: 2024, lines: { "省重点高中": 595, "市重点高中": 490, "普通高中": 350 } },
-                { year: 2023, lines: { "省重点高中": 585, "市重点高中": 480, "普通高中": 340 } },
-                { year: 2022, lines: { "省重点高中": 575, "市重点高中": 470, "普通高中": 330 } },
-                { year: 2021, lines: { "省重点高中": 565, "市重点高中": 460, "普通高中": 320 } }
-            ],
-            tip: "宜春中学等名校录取线约655+。"
-        },
-        // === 吉安 ===
-        {
-            city: "吉安", province: "江西省", totalScore: 740,
-            years: [
-                { year: 2024, lines: { "省重点高中": 590, "市重点高中": 485, "普通高中": 345 } },
-                { year: 2023, lines: { "省重点高中": 580, "市重点高中": 475, "普通高中": 335 } },
-                { year: 2022, lines: { "省重点高中": 570, "市重点高中": 465, "普通高中": 325 } },
-                { year: 2021, lines: { "省重点高中": 560, "市重点高中": 455, "普通高中": 315 } }
-            ],
-            tip: "吉安一中、白鹭洲中学等名校录取线约650+。"
-        },
-        // === 上饶 ===
-        {
-            city: "上饶", province: "江西省", totalScore: 740,
-            years: [
-                { year: 2024, lines: { "省重点高中": 590, "市重点高中": 485, "普通高中": 345 } },
-                { year: 2023, lines: { "省重点高中": 580, "市重点高中": 475, "普通高中": 335 } },
-                { year: 2022, lines: { "省重点高中": 570, "市重点高中": 465, "普通高中": 325 } },
-                { year: 2021, lines: { "省重点高中": 560, "市重点高中": 455, "普通高中": 315 } }
-            ],
-            tip: "上饶中学、一中等名校录取线约650+。"
-        },
-        // === 抚州 ===
-        {
-            city: "抚州", province: "江西省", totalScore: 740,
-            years: [
-                { year: 2024, lines: { "省重点高中": 600, "市重点高中": 495, "普通高中": 355 } },
-                { year: 2023, lines: { "省重点高中": 590, "市重点高中": 485, "普通高中": 345 } },
-                { year: 2022, lines: { "省重点高中": 580, "市重点高中": 475, "普通高中": 335 } },
-                { year: 2021, lines: { "省重点高中": 570, "市重点高中": 465, "普通高中": 325 } }
-            ],
-            tip: "抚州一中、临川一中/二中是全国名校，录取线约670+。临川教育全国知名。"
-        },
-        // === 蚌埠 ===
-        {
-            city: "蚌埠", province: "安徽省", totalScore: 760,
-            years: [
-                { year: 2024, lines: { "省示范高中(重点)": 630, "市示范高中": 530, "普通高中": 400 } },
-                { year: 2023, lines: { "省示范高中(重点)": 620, "市示范高中": 520, "普通高中": 390 } },
-                { year: 2022, lines: { "省示范高中(重点)": 610, "市示范高中": 510, "普通高中": 380 } },
-                { year: 2021, lines: { "省示范高中(重点)": 600, "市示范高中": 500, "普通高中": 370 } }
-            ],
-            tip: "蚌埠二中、三中等名校录取线约690+。"
-        },
-        // === 阜阳 ===
-        {
-            city: "阜阳", province: "安徽省", totalScore: 760,
-            years: [
-                { year: 2024, lines: { "省示范高中(重点)": 620, "市示范高中": 520, "普通高中": 390 } },
-                { year: 2023, lines: { "省示范高中(重点)": 610, "市示范高中": 510, "普通高中": 380 } },
-                { year: 2022, lines: { "省示范高中(重点)": 600, "市示范高中": 500, "普通高中": 370 } },
-                { year: 2021, lines: { "省示范高中(重点)": 590, "市示范高中": 490, "普通高中": 360 } }
-            ],
-            tip: "阜阳一中、城郊中学等名校录取线约680+。阜阳考生基数大，竞争激烈。"
-        },
-        // === 安庆 ===
-        {
-            city: "安庆", province: "安徽省", totalScore: 760,
-            years: [
-                { year: 2024, lines: { "省示范高中(重点)": 635, "市示范高中": 535, "普通高中": 405 } },
-                { year: 2023, lines: { "省示范高中(重点)": 625, "市示范高中": 525, "普通高中": 395 } },
-                { year: 2022, lines: { "省示范高中(重点)": 615, "市示范高中": 515, "普通高中": 385 } },
-                { year: 2021, lines: { "省示范高中(重点)": 605, "市示范高中": 505, "普通高中": 375 } }
-            ],
-            tip: "安庆一中、二中等名校录取线约700+。安庆教育底蕴深厚。"
-        },
-        // === 滁州 ===
-        {
-            city: "滁州", province: "安徽省", totalScore: 760,
-            years: [
-                { year: 2024, lines: { "省示范高中(重点)": 625, "市示范高中": 525, "普通高中": 395 } },
-                { year: 2023, lines: { "省示范高中(重点)": 615, "市示范高中": 515, "普通高中": 385 } },
-                { year: 2022, lines: { "省示范高中(重点)": 605, "市示范高中": 505, "普通高中": 375 } },
-                { year: 2021, lines: { "省示范高中(重点)": 595, "市示范高中": 495, "普通高中": 365 } }
-            ],
-            tip: "滁州中学、二中等名校录取线约685+。"
-        },
-        // === 宿州 ===
-        {
-            city: "宿州", province: "安徽省", totalScore: 760,
-            years: [
-                { year: 2024, lines: { "省示范高中(重点)": 610, "市示范高中": 510, "普通高中": 380 } },
-                { year: 2023, lines: { "省示范高中(重点)": 600, "市示范高中": 500, "普通高中": 370 } },
-                { year: 2022, lines: { "省示范高中(重点)": 590, "市示范高中": 490, "普通高中": 360 } },
-                { year: 2021, lines: { "省示范高中(重点)": 580, "市示范高中": 480, "普通高中": 350 } }
-            ],
-            tip: "宿州二中、宿城一中等名校录取线约670+。"
-        },
-        // === 亳州 ===
-        {
-            city: "亳州", province: "安徽省", totalScore: 760,
-            years: [
-                { year: 2024, lines: { "省示范高中(重点)": 610, "市示范高中": 505, "普通高中": 375 } },
-                { year: 2023, lines: { "省示范高中(重点)": 600, "市示范高中": 495, "普通高中": 365 } },
-                { year: 2022, lines: { "省示范高中(重点)": 590, "市示范高中": 485, "普通高中": 355 } },
-                { year: 2021, lines: { "省示范高中(重点)": 580, "市示范高中": 475, "普通高中": 345 } }
-            ],
-            tip: "亳州一中、二中等名校录取线约670+。"
-        },
-        // === 六安 ===
-        {
-            city: "六安", province: "安徽省", totalScore: 760,
-            years: [
-                { year: 2024, lines: { "省示范高中(重点)": 615, "市示范高中": 515, "普通高中": 385 } },
-                { year: 2023, lines: { "省示范高中(重点)": 605, "市示范高中": 505, "普通高中": 375 } },
-                { year: 2022, lines: { "省示范高中(重点)": 595, "市示范高中": 495, "普通高中": 365 } },
-                { year: 2021, lines: { "省示范高中(重点)": 585, "市示范高中": 485, "普通高中": 355 } }
-            ],
-            tip: "六安一中、二中等名校录取线约675+。"
-        },
-        // === 德阳 ===
-        {
-            city: "德阳", province: "四川省", totalScore: 710,
-            years: [
-                { year: 2024, lines: { "国家级示范高中(重点)": 575, "省级示范高中": 490, "普通高中": 370 } },
-                { year: 2023, lines: { "国家级示范高中(重点)": 565, "省级示范高中": 480, "普通高中": 360 } },
-                { year: 2022, lines: { "国家级示范高中(重点)": 555, "省级示范高中": 470, "普通高中": 350 } },
-                { year: 2021, lines: { "国家级示范高中(重点)": 545, "省级示范高中": 460, "普通高中": 340 } }
-            ],
-            tip: "德阳中学、五中等名校录取线约635+。"
-        },
-        // === 宜宾 ===
-        {
-            city: "宜宾", province: "四川省", totalScore: 710,
-            years: [
-                { year: 2024, lines: { "国家级示范高中(重点)": 570, "省级示范高中": 480, "普通高中": 360 } },
-                { year: 2023, lines: { "国家级示范高中(重点)": 560, "省级示范高中": 470, "普通高中": 350 } },
-                { year: 2022, lines: { "国家级示范高中(重点)": 550, "省级示范高中": 460, "普通高中": 340 } },
-                { year: 2021, lines: { "国家级示范高中(重点)": 540, "省级示范高中": 450, "普通高中": 330 } }
-            ],
-            tip: "宜宾一中、三中等名校录取线约630+。"
-        },
-        // === 泸州 ===
-        {
-            city: "泸州", province: "四川省", totalScore: 710,
-            years: [
-                { year: 2024, lines: { "国家级示范高中(重点)": 570, "省级示范高中": 480, "普通高中": 360 } },
-                { year: 2023, lines: { "国家级示范高中(重点)": 560, "省级示范高中": 470, "普通高中": 350 } },
-                { year: 2022, lines: { "国家级示范高中(重点)": 550, "省级示范高中": 460, "普通高中": 340 } },
-                { year: 2021, lines: { "国家级示范高中(重点)": 540, "省级示范高中": 450, "普通高中": 330 } }
-            ],
-            tip: "泸州中学、天立学校等名校录取线约630+。"
-        },
-        // === 南充 ===
-        {
-            city: "南充", province: "四川省", totalScore: 710,
-            years: [
-                { year: 2024, lines: { "国家级示范高中(重点)": 565, "省级示范高中": 475, "普通高中": 355 } },
-                { year: 2023, lines: { "国家级示范高中(重点)": 555, "省级示范高中": 465, "普通高中": 345 } },
-                { year: 2022, lines: { "国家级示范高中(重点)": 545, "省级示范高中": 455, "普通高中": 335 } },
-                { year: 2021, lines: { "国家级示范高中(重点)": 535, "省级示范高中": 445, "普通高中": 325 } }
-            ],
-            tip: "南充高中、十中等名校录取线约625+。"
-        },
-        // === 达州 ===
-        {
-            city: "达州", province: "四川省", totalScore: 710,
-            years: [
-                { year: 2024, lines: { "国家级示范高中(重点)": 555, "省级示范高中": 465, "普通高中": 345 } },
-                { year: 2023, lines: { "国家级示范高中(重点)": 545, "省级示范高中": 455, "普通高中": 335 } },
-                { year: 2022, lines: { "国家级示范高中(重点)": 535, "省级示范高中": 445, "普通高中": 325 } },
-                { year: 2021, lines: { "国家级示范高中(重点)": 525, "省级示范高中": 435, "普通高中": 315 } }
-            ],
-            tip: "达州中学、一中等名校录取线约615+。"
-        },
-        // === 乐山 ===
-        {
-            city: "乐山", province: "四川省", totalScore: 710,
-            years: [
-                { year: 2024, lines: { "国家级示范高中(重点)": 565, "省级示范高中": 475, "普通高中": 355 } },
-                { year: 2023, lines: { "国家级示范高中(重点)": 555, "省级示范高中": 465, "普通高中": 345 } },
-                { year: 2022, lines: { "国家级示范高中(重点)": 545, "省级示范高中": 455, "普通高中": 335 } },
-                { year: 2021, lines: { "国家级示范高中(重点)": 535, "省级示范高中": 445, "普通高中": 325 } }
-            ],
-            tip: "乐山一中、五通桥中学等名校录取线约625+。"
-        },
-        // === 内江 ===
-        {
-            city: "内江", province: "四川省", totalScore: 710,
-            years: [
-                { year: 2024, lines: { "国家级示范高中(重点)": 560, "省级示范高中": 470, "普通高中": 350 } },
-                { year: 2023, lines: { "国家级示范高中(重点)": 550, "省级示范高中": 460, "普通高中": 340 } },
-                { year: 2022, lines: { "国家级示范高中(重点)": 540, "省级示范高中": 450, "普通高中": 330 } },
-                { year: 2021, lines: { "国家级示范高中(重点)": 530, "省级示范高中": 440, "普通高中": 320 } }
-            ],
-            tip: "内江六中等名校录取线约620+。"
-        },
-        // === 自贡 ===
-        {
-            city: "自贡", province: "四川省", totalScore: 710,
-            years: [
-                { year: 2024, lines: { "国家级示范高中(重点)": 560, "省级示范高中": 470, "普通高中": 350 } },
-                { year: 2023, lines: { "国家级示范高中(重点)": 550, "省级示范高中": 460, "普通高中": 340 } },
-                { year: 2022, lines: { "国家级示范高中(重点)": 540, "省级示范高中": 450, "普通高中": 330 } },
-                { year: 2021, lines: { "国家级示范高中(重点)": 530, "省级示范高中": 440, "普通高中": 320 } }
-            ],
-            tip: "自贡一中、蜀光中学等名校录取线约620+。"
-        },
-        // === 遂宁 ===
-        {
-            city: "遂宁", province: "四川省", totalScore: 710,
-            years: [
-                { year: 2024, lines: { "国家级示范高中(重点)": 555, "省级示范高中": 465, "普通高中": 345 } },
-                { year: 2023, lines: { "国家级示范高中(重点)": 545, "省级示范高中": 455, "普通高中": 335 } },
-                { year: 2022, lines: { "国家级示范高中(重点)": 535, "省级示范高中": 445, "普通高中": 325 } },
-                { year: 2021, lines: { "国家级示范高中(重点)": 525, "省级示范高中": 435, "普通高中": 315 } }
-            ],
-            tip: "遂宁中学等名校录取线约615+。"
-        },
-        // === 眉山 ===
-        {
-            city: "眉山", province: "四川省", totalScore: 710,
-            years: [
-                { year: 2024, lines: { "国家级示范高中(重点)": 560, "省级示范高中": 470, "普通高中": 350 } },
-                { year: 2023, lines: { "国家级示范高中(重点)": 550, "省级示范高中": 460, "普通高中": 340 } },
-                { year: 2022, lines: { "国家级示范高中(重点)": 540, "省级示范高中": 450, "普通高中": 330 } },
-                { year: 2021, lines: { "国家级示范高中(重点)": 530, "省级示范高中": 440, "普通高中": 320 } }
-            ],
-            tip: "眉山中学等名校录取线约620+。"
-        },
-        // === 曲靖 ===
-        {
-            city: "曲靖", province: "云南省", totalScore: 600,
-            years: [
-                { year: 2024, lines: { "省一级高中(重点)": 520, "省二三级高中": 430, "普通高中": 320 } },
-                { year: 2023, lines: { "省一级高中(重点)": 510, "省二三级高中": 420, "普通高中": 310 } },
-                { year: 2022, lines: { "省一级高中(重点)": 500, "省二三级高中": 410, "普通高中": 300 } },
-                { year: 2021, lines: { "省一级高中(重点)": 490, "省二三级高中": 400, "普通高中": 290 } }
-            ],
-            tip: "曲靖一中是全国名校，录取线约555+。曲靖教育质量在云南领先。"
-        },
-        // === 玉溪 ===
-        {
-            city: "玉溪", province: "云南省", totalScore: 600,
-            years: [
-                { year: 2024, lines: { "省一级高中(重点)": 515, "省二三级高中": 420, "普通高中": 310 } },
-                { year: 2023, lines: { "省一级高中(重点)": 505, "省二三级高中": 410, "普通高中": 300 } },
-                { year: 2022, lines: { "省一级高中(重点)": 495, "省二三级高中": 400, "普通高中": 290 } },
-                { year: 2021, lines: { "省一级高中(重点)": 485, "省二三级高中": 390, "普通高中": 280 } }
-            ],
-            tip: "玉溪一中等名校录取线约545+。"
-        },
-        // === 大理 ===
-        {
-            city: "大理", province: "云南省", totalScore: 600,
-            years: [
-                { year: 2024, lines: { "省一级高中(重点)": 500, "省二三级高中": 400, "普通高中": 290 } },
-                { year: 2023, lines: { "省一级高中(重点)": 490, "省二三级高中": 390, "普通高中": 280 } },
-                { year: 2022, lines: { "省一级高中(重点)": 480, "省二三级高中": 380, "普通高中": 270 } },
-                { year: 2021, lines: { "省一级高中(重点)": 470, "省二三级高中": 370, "普通高中": 260 } }
-            ],
-            tip: "大理一中等名校录取线约535+。"
-        },
-        // === 淄博 ===
-        {
-            city: "淄博", province: "山东省", totalScore: 660,
-            years: [
-                { year: 2024, lines: { "重点高中": 555, "普通高中": 410, "最低控制线": 300 } },
-                { year: 2023, lines: { "重点高中": 545, "普通高中": 400, "最低控制线": 290 } },
-                { year: 2022, lines: { "重点高中": 535, "普通高中": 390, "最低控制线": 280 } },
-                { year: 2021, lines: { "重点高中": 525, "普通高中": 380, "最低控制线": 270 } }
-            ],
-            tip: "淄博实验中学、五中等名校录取线约590+。"
-        },
-        // === 济宁 ===
-        {
-            city: "济宁", province: "山东省", totalScore: 660,
-            years: [
-                { year: 2024, lines: { "重点高中": 545, "普通高中": 390, "最低控制线": 280 } },
-                { year: 2023, lines: { "重点高中": 535, "普通高中": 380, "最低控制线": 270 } },
-                { year: 2022, lines: { "重点高中": 525, "普通高中": 370, "最低控制线": 260 } },
-                { year: 2021, lines: { "重点高中": 515, "普通高中": 360, "最低控制线": 250 } }
-            ],
-            tip: "济宁一中等名校录取线约590+。"
-        },
-        // === 泰安 ===
-        {
-            city: "泰安", province: "山东省", totalScore: 660,
-            years: [
-                { year: 2024, lines: { "重点高中": 550, "普通高中": 400, "最低控制线": 290 } },
-                { year: 2023, lines: { "重点高中": 540, "普通高中": 390, "最低控制线": 280 } },
-                { year: 2022, lines: { "重点高中": 530, "普通高中": 380, "最低控制线": 270 } },
-                { year: 2021, lines: { "重点高中": 520, "普通高中": 370, "最低控制线": 260 } }
-            ],
-            tip: "泰安一中、英雄山中学等名校录取线约585+。"
-        },
-        // === 威海 ===
-        {
-            city: "威海", province: "山东省", totalScore: 660,
-            years: [
-                { year: 2024, lines: { "重点高中": 560, "普通高中": 420, "最低控制线": 310 } },
-                { year: 2023, lines: { "重点高中": 550, "普通高中": 410, "最低控制线": 300 } },
-                { year: 2022, lines: { "重点高中": 540, "普通高中": 400, "最低控制线": 290 } },
-                { year: 2021, lines: { "重点高中": 530, "普通高中": 390, "最低控制线": 280 } }
-            ],
-            tip: "威海一中等名校录取线约600+。"
-        },
-        // === 德州 ===
-        {
-            city: "德州", province: "山东省", totalScore: 660,
-            years: [
-                { year: 2024, lines: { "重点高中": 535, "普通高中": 380, "最低控制线": 270 } },
-                { year: 2023, lines: { "重点高中": 525, "普通高中": 370, "最低控制线": 260 } },
-                { year: 2022, lines: { "重点高中": 515, "普通高中": 360, "最低控制线": 250 } },
-                { year: 2021, lines: { "重点高中": 505, "普通高中": 350, "最低控制线": 240 } }
-            ],
-            tip: "德州一中等名校录取线约575+。"
-        },
-        // === 聊城 ===
-        {
-            city: "聊城", province: "山东省", totalScore: 660,
-            years: [
-                { year: 2024, lines: { "重点高中": 530, "普通高中": 375, "最低控制线": 265 } },
-                { year: 2023, lines: { "重点高中": 520, "普通高中": 365, "最低控制线": 255 } },
-                { year: 2022, lines: { "重点高中": 510, "普通高中": 355, "最低控制线": 245 } },
-                { year: 2021, lines: { "重点高中": 500, "普通高中": 345, "最低控制线": 235 } }
-            ],
-            tip: "聊城一中、三中等名校录取线约570+。"
-        },
-        // === 菏泽 ===
-        {
-            city: "菏泽", province: "山东省", totalScore: 660,
-            years: [
-                { year: 2024, lines: { "重点高中": 525, "普通高中": 370, "最低控制线": 260 } },
-                { year: 2023, lines: { "重点高中": 515, "普通高中": 360, "最低控制线": 250 } },
-                { year: 2022, lines: { "重点高中": 505, "普通高中": 350, "最低控制线": 240 } },
-                { year: 2021, lines: { "重点高中": 495, "普通高中": 340, "最低控制线": 230 } }
-            ],
-            tip: "菏泽一中等名校录取线约570+。"
-        },
-        // === 东营 ===
-        {
-            city: "东营", province: "山东省", totalScore: 660,
-            years: [
-                { year: 2024, lines: { "重点高中": 560, "普通高中": 420, "最低控制线": 310 } },
-                { year: 2023, lines: { "重点高中": 550, "普通高中": 410, "最低控制线": 300 } },
-                { year: 2022, lines: { "重点高中": 540, "普通高中": 400, "最低控制线": 290 } },
-                { year: 2021, lines: { "重点高中": 530, "普通高中": 390, "最低控制线": 280 } }
-            ],
-            tip: "东营一中等名校录取线约600+。"
-        },
-        // === 日照 ===
-        {
-            city: "日照", province: "山东省", totalScore: 660,
-            years: [
-                { year: 2024, lines: { "重点高中": 545, "普通高中": 400, "最低控制线": 290 } },
-                { year: 2023, lines: { "重点高中": 535, "普通高中": 390, "最低控制线": 280 } },
-                { year: 2022, lines: { "重点高中": 525, "普通高中": 380, "最低控制线": 270 } },
-                { year: 2021, lines: { "重点高中": 515, "普通高中": 370, "最低控制线": 260 } }
-            ],
-            tip: "日照一中等名校录取线约585+。"
-        },
-        // === 滨州 ===
-        {
-            city: "滨州", province: "山东省", totalScore: 660,
-            years: [
-                { year: 2024, lines: { "重点高中": 535, "普通高中": 385, "最低控制线": 275 } },
-                { year: 2023, lines: { "重点高中": 525, "普通高中": 375, "最低控制线": 265 } },
-                { year: 2022, lines: { "重点高中": 515, "普通高中": 365, "最低控制线": 255 } },
-                { year: 2021, lines: { "重点高中": 505, "普通高中": 355, "最低控制线": 245 } }
-            ],
-            tip: "滨州一中等名校录取线约575+。"
-        },
-        // === 鄂尔多斯 ===
-        {
-            city: "鄂尔多斯", province: "内蒙古自治区", totalScore: 600,
-            years: [
-                { year: 2024, lines: { "重点高中": 510, "普通高中": 370, "最低控制线": 280 } },
-                { year: 2023, lines: { "重点高中": 500, "普通高中": 360, "最低控制线": 270 } },
-                { year: 2022, lines: { "重点高中": 490, "普通高中": 350, "最低控制线": 260 } },
-                { year: 2021, lines: { "重点高中": 480, "普通高中": 340, "最低控制线": 250 } }
-            ],
-            tip: "鄂尔多斯一中等名校录取线约545+。"
-        },
-        // === 赤峰 ===
-        {
-            city: "赤峰", province: "内蒙古自治区", totalScore: 600,
-            years: [
-                { year: 2024, lines: { "重点高中": 490, "普通高中": 350, "最低控制线": 260 } },
-                { year: 2023, lines: { "重点高中": 480, "普通高中": 340, "最低控制线": 250 } },
-                { year: 2022, lines: { "重点高中": 470, "普通高中": 330, "最低控制线": 240 } },
-                { year: 2021, lines: { "重点高中": 460, "普通高中": 320, "最低控制线": 230 } }
-            ],
-            tip: "赤峰二中等名校录取线约530+。"
-        },
-        // === 通辽 ===
-        {
-            city: "通辽", province: "内蒙古自治区", totalScore: 600,
-            years: [
-                { year: 2024, lines: { "重点高中": 485, "普通高中": 345, "最低控制线": 255 } },
-                { year: 2023, lines: { "重点高中": 475, "普通高中": 335, "最低控制线": 245 } },
-                { year: 2022, lines: { "重点高中": 465, "普通高中": 325, "最低控制线": 235 } },
-                { year: 2021, lines: { "重点高中": 455, "普通高中": 315, "最低控制线": 225 } }
-            ],
-            tip: "通辽一中、五中等名校录取线约525+。"
-        },
-        // === 天水 ===
-        {
-            city: "天水", province: "甘肃省", totalScore: 690,
-            years: [
-                { year: 2024, lines: { "省级示范性高中(重点)": 560, "市级示范性高中": 460, "普通高中": 340 } },
-                { year: 2023, lines: { "省级示范性高中(重点)": 550, "市级示范性高中": 450, "普通高中": 330 } },
-                { year: 2022, lines: { "省级示范性高中(重点)": 540, "市级示范性高中": 440, "普通高中": 320 } },
-                { year: 2021, lines: { "省级示范性高中(重点)": 530, "市级示范性高中": 430, "普通高中": 310 } }
-            ],
-            tip: "天水一中、二中等名校录取线约615+。"
-        },
-        // === 庆阳 ===
-        {
-            city: "庆阳", province: "甘肃省", totalScore: 690,
-            years: [
-                { year: 2024, lines: { "省级示范性高中(重点)": 550, "市级示范性高中": 450, "普通高中": 330 } },
-                { year: 2023, lines: { "省级示范性高中(重点)": 540, "市级示范性高中": 440, "普通高中": 320 } },
-                { year: 2022, lines: { "省级示范性高中(重点)": 530, "市级示范性高中": 430, "普通高中": 310 } },
-                { year: 2021, lines: { "省级示范性高中(重点)": 520, "市级示范性高中": 420, "普通高中": 300 } }
-            ],
-            tip: "庆阳一中等名校录取线约600+。"
-        },
-        // === 莆田 ===
-        {
-            city: "莆田", province: "福建省", totalScore: 800,
-            years: [
-                { year: 2024, lines: { "省一级达标高中": 660, "省二级达标高中": 550, "普通高中": 380 } },
-                { year: 2023, lines: { "省一级达标高中": 650, "省二级达标高中": 540, "普通高中": 370 } },
-                { year: 2022, lines: { "省一级达标高中": 640, "省二级达标高中": 530, "普通高中": 360 } },
-                { year: 2021, lines: { "省一级达标高中": 630, "省二级达标高中": 520, "普通高中": 350 } }
-            ],
-            tip: "莆田一中、二中等名校录取线约720+。"
-        },
-        // === 龙岩 ===
-        {
-            city: "龙岩", province: "福建省", totalScore: 800,
-            years: [
-                { year: 2024, lines: { "省一级达标高中": 645, "省二级达标高中": 535, "普通高中": 365 } },
-                { year: 2023, lines: { "省一级达标高中": 635, "省二级达标高中": 525, "普通高中": 355 } },
-                { year: 2022, lines: { "省一级达标高中": 625, "省二级达标高中": 515, "普通高中": 345 } },
-                { year: 2021, lines: { "省一级达标高中": 615, "省二级达标高中": 505, "普通高中": 335 } }
-            ],
-            tip: "龙岩一中等名校录取线约710+。"
-        },
-        // === 三明 ===
-        {
-            city: "三明", province: "福建省", totalScore: 800,
-            years: [
-                { year: 2024, lines: { "省一级达标高中": 635, "省二级达标高中": 525, "普通高中": 355 } },
-                { year: 2023, lines: { "省一级达标高中": 625, "省二级达标高中": 515, "普通高中": 345 } },
-                { year: 2022, lines: { "省一级达标高中": 615, "省二级达标高中": 505, "普通高中": 335 } },
-                { year: 2021, lines: { "省一级达标高中": 605, "省二级达标高中": 495, "普通高中": 325 } }
-            ],
-            tip: "三明一中等名校录取线约700+。"
-        },
-        // === 南平 ===
-        {
-            city: "南平", province: "福建省", totalScore: 800,
-            years: [
-                { year: 2024, lines: { "省一级达标高中": 625, "省二级达标高中": 515, "普通高中": 345 } },
-                { year: 2023, lines: { "省一级达标高中": 615, "省二级达标高中": 505, "普通高中": 335 } },
-                { year: 2022, lines: { "省一级达标高中": 605, "省二级达标高中": 495, "普通高中": 325 } },
-                { year: 2021, lines: { "省一级达标高中": 595, "省二级达标高中": 485, "普通高中": 315 } }
-            ],
-            tip: "南平一中等名校录取线约690+。"
-        },
-        // === 宁德 ===
-        {
-            city: "宁德", province: "福建省", totalScore: 800,
-            years: [
-                { year: 2024, lines: { "省一级达标高中": 630, "省二级达标高中": 520, "普通高中": 350 } },
-                { year: 2023, lines: { "省一级达标高中": 620, "省二级达标高中": 510, "普通高中": 340 } },
-                { year: 2022, lines: { "省一级达标高中": 610, "省二级达标高中": 500, "普通高中": 330 } },
-                { year: 2021, lines: { "省一级达标高中": 600, "省二级达标高中": 490, "普通高中": 320 } }
-            ],
-            tip: "宁德一中等名校录取线约695+。"
-        },
-        // === 锦州 ===
-        {
-            city: "锦州", province: "辽宁省", totalScore: 730,
-            years: [
-                { year: 2024, lines: { "省重点高中": 590, "市重点高中": 490, "普通高中": 360 } },
-                { year: 2023, lines: { "省重点高中": 580, "市重点高中": 480, "普通高中": 350 } },
-                { year: 2022, lines: { "省重点高中": 570, "市重点高中": 470, "普通高中": 340 } },
-                { year: 2021, lines: { "省重点高中": 560, "市重点高中": 460, "普通高中": 330 } }
-            ],
-            tip: "锦州中学等名校录取线约640+。"
-        },
-        // === 抚顺 ===
-        {
-            city: "抚顺", province: "辽宁省", totalScore: 730,
-            years: [
-                { year: 2024, lines: { "省重点高中": 580, "市重点高中": 480, "普通高中": 350 } },
-                { year: 2023, lines: { "省重点高中": 570, "市重点高中": 470, "普通高中": 340 } },
-                { year: 2022, lines: { "省重点高中": 560, "市重点高中": 460, "普通高中": 330 } },
-                { year: 2021, lines: { "省重点高中": 550, "市重点高中": 450, "普通高中": 320 } }
-            ],
-            tip: "抚顺二中等名校录取线约635+。"
-        },
-        // === 营口 ===
-        {
-            city: "营口", province: "辽宁省", totalScore: 730,
-            years: [
-                { year: 2024, lines: { "省重点高中": 575, "市重点高中": 475, "普通高中": 345 } },
-                { year: 2023, lines: { "省重点高中": 565, "市重点高中": 465, "普通高中": 335 } },
-                { year: 2022, lines: { "省重点高中": 555, "市重点高中": 455, "普通高中": 325 } },
-                { year: 2021, lines: { "省重点高中": 545, "市重点高中": 445, "普通高中": 315 } }
-            ],
-            tip: "营口一中等名校录取线约630+。"
-        },
-        // === 牡丹江 ===
-        {
-            city: "牡丹江", province: "黑龙江省", totalScore: 560,
-            years: [
-                { year: 2024, lines: { "省重点高中": 460, "市重点高中": 380, "普通高中": 280 } },
-                { year: 2023, lines: { "省重点高中": 450, "市重点高中": 370, "普通高中": 270 } },
-                { year: 2022, lines: { "省重点高中": 440, "市重点高中": 360, "普通高中": 260 } },
-                { year: 2021, lines: { "省重点高中": 430, "市重点高中": 350, "普通高中": 250 } }
-            ],
-            tip: "牡丹江一中等名校录取线约500+。"
-        },
-        // === 齐齐哈尔 ===
-        {
-            city: "齐齐哈尔", province: "黑龙江省", totalScore: 560,
-            years: [
-                { year: 2024, lines: { "省重点高中": 450, "市重点高中": 370, "普通高中": 270 } },
-                { year: 2023, lines: { "省重点高中": 440, "市重点高中": 360, "普通高中": 260 } },
-                { year: 2022, lines: { "省重点高中": 430, "市重点高中": 350, "普通高中": 250 } },
-                { year: 2021, lines: { "省重点高中": 420, "市重点高中": 340, "普通高中": 240 } }
-            ],
-            tip: "齐齐哈尔中学等名校录取线约490+。"
-        },
-        // === 佳木斯 ===
-        {
-            city: "佳木斯", province: "黑龙江省", totalScore: 560,
-            years: [
-                { year: 2024, lines: { "省重点高中": 445, "市重点高中": 365, "普通高中": 265 } },
-                { year: 2023, lines: { "省重点高中": 435, "市重点高中": 355, "普通高中": 255 } },
-                { year: 2022, lines: { "省重点高中": 425, "市重点高中": 345, "普通高中": 245 } },
-                { year: 2021, lines: { "省重点高中": 415, "市重点高中": 335, "普通高中": 235 } }
-            ],
-            tip: "佳木斯一中等名校录取线约485+。"
-        },
-        // === 四平 ===
-        {
-            city: "四平", province: "吉林省", totalScore: 600,
-            years: [
-                { year: 2024, lines: { "重点高中": 490, "普通高中": 340, "最低控制线": 260 } },
-                { year: 2023, lines: { "重点高中": 480, "普通高中": 330, "最低控制线": 250 } },
-                { year: 2022, lines: { "重点高中": 470, "普通高中": 320, "最低控制线": 240 } },
-                { year: 2021, lines: { "重点高中": 460, "普通高中": 310, "最低控制线": 230 } }
-            ],
-            tip: "四平一中等名校录取线约530+。"
-        },
-        // === 松原 ===
-        {
-            city: "松原", province: "吉林省", totalScore: 600,
-            years: [
-                { year: 2024, lines: { "重点高中": 480, "普通高中": 330, "最低控制线": 250 } },
-                { year: 2023, lines: { "重点高中": 470, "普通高中": 320, "最低控制线": 240 } },
-                { year: 2022, lines: { "重点高中": 460, "普通高中": 310, "最低控制线": 230 } },
-                { year: 2021, lines: { "重点高中": 450, "普通高中": 300, "最低控制线": 220 } }
-            ],
-            tip: "松原实验高中等名校录取线约525+。"
-        },
-        // === 连云港 ===
-        {
-            city: "连云港", province: "江苏省", totalScore: 700,
-            years: [
-                { year: 2024, lines: { "四星级高中(重点)": 575, "三星级高中": 480, "普通高中": 370 } },
-                { year: 2023, lines: { "四星级高中(重点)": 565, "三星级高中": 470, "普通高中": 360 } },
-                { year: 2022, lines: { "四星级高中(重点)": 555, "三星级高中": 460, "普通高中": 350 } },
-                { year: 2021, lines: { "四星级高中(重点)": 545, "三星级高中": 450, "普通高中": 340 } }
-            ],
-            tip: "连云港中学、新海高级中学等录取线约635+。"
-        },
-        // === 淮安 ===
-        {
-            city: "淮安", province: "江苏省", totalScore: 700,
-            years: [
-                { year: 2024, lines: { "四星级高中(重点)": 580, "三星级高中": 490, "普通高中": 380 } },
-                { year: 2023, lines: { "四星级高中(重点)": 570, "三星级高中": 480, "普通高中": 370 } },
-                { year: 2022, lines: { "四星级高中(重点)": 560, "三星级高中": 470, "普通高中": 360 } },
-                { year: 2021, lines: { "四星级高中(重点)": 550, "三星级高中": 460, "普通高中": 350 } }
-            ],
-            tip: "淮安中学、清江中学等录取线约640+。"
-        },
-        // === 宿迁 ===
-        {
-            city: "宿迁", province: "江苏省", totalScore: 700,
-            years: [
-                { year: 2024, lines: { "四星级高中(重点)": 570, "三星级高中": 475, "普通高中": 365 } },
-                { year: 2023, lines: { "四星级高中(重点)": 560, "三星级高中": 465, "普通高中": 355 } },
-                { year: 2022, lines: { "四星级高中(重点)": 550, "三星级高中": 455, "普通高中": 345 } },
-                { year: 2021, lines: { "四星级高中(重点)": 540, "三星级高中": 445, "普通高中": 335 } }
-            ],
-            tip: "宿迁中学等名校录取线约630+。"
-        },
-        // === 芜湖 === 已包含
-        // === 淮南 ===
-        {
-            city: "淮南", province: "安徽省", totalScore: 760,
-            years: [
-                { year: 2024, lines: { "省示范高中(重点)": 625, "市示范高中": 525, "普通高中": 395 } },
-                { year: 2023, lines: { "省示范高中(重点)": 615, "市示范高中": 515, "普通高中": 385 } },
-                { year: 2022, lines: { "省示范高中(重点)": 605, "市示范高中": 505, "普通高中": 375 } },
-                { year: 2021, lines: { "省示范高中(重点)": 595, "市示范高中": 495, "普通高中": 365 } }
-            ],
-            tip: "淮南一中、二中等名校录取线约685+。"
-        },
-        // === 淮北 ===
-        {
-            city: "淮北", province: "安徽省", totalScore: 760,
-            years: [
-                { year: 2024, lines: { "省示范高中(重点)": 620, "市示范高中": 520, "普通高中": 390 } },
-                { year: 2023, lines: { "省示范高中(重点)": 610, "市示范高中": 510, "普通高中": 380 } },
-                { year: 2022, lines: { "省示范高中(重点)": 600, "市示范高中": 500, "普通高中": 370 } },
-                { year: 2021, lines: { "省示范高中(重点)": 590, "市示范高中": 490, "普通高中": 360 } }
-            ],
-            tip: "淮北一中、二中等名校录取线约680+。"
-        },
-        // === 铜陵 ===
-        {
-            city: "铜陵", province: "安徽省", totalScore: 760,
-            years: [
-                { year: 2024, lines: { "省示范高中(重点)": 640, "市示范高中": 540, "普通高中": 410 } },
-                { year: 2023, lines: { "省示范高中(重点)": 630, "市示范高中": 530, "普通高中": 400 } },
-                { year: 2022, lines: { "省示范高中(重点)": 620, "市示范高中": 520, "普通高中": 390 } },
-                { year: 2021, lines: { "省示范高中(重点)": 610, "市示范高中": 510, "普通高中": 380 } }
-            ],
-            tip: "铜陵一中、五中等名校录取线约700+。"
-        },
-        // === 黄山 ===
-        {
-            city: "黄山", province: "安徽省", totalScore: 760,
-            years: [
-                { year: 2024, lines: { "省示范高中(重点)": 610, "市示范高中": 510, "普通高中": 380 } },
-                { year: 2023, lines: { "省示范高中(重点)": 600, "市示范高中": 500, "普通高中": 370 } },
-                { year: 2022, lines: { "省示范高中(重点)": 590, "市示范高中": 490, "普通高中": 360 } },
-                { year: 2021, lines: { "省示范高中(重点)": 580, "市示范高中": 480, "普通高中": 350 } }
-            ],
-            tip: "屯溪一中等名校录取线约670+。"
-        },
-        // === 宣城 ===
-        {
-            city: "宣城", province: "安徽省", totalScore: 760,
-            years: [
-                { year: 2024, lines: { "省示范高中(重点)": 620, "市示范高中": 520, "普通高中": 390 } },
-                { year: 2023, lines: { "省示范高中(重点)": 610, "市示范高中": 510, "普通高中": 380 } },
-                { year: 2022, lines: { "省示范高中(重点)": 600, "市示范高中": 500, "普通高中": 370 } },
-                { year: 2021, lines: { "省示范高中(重点)": 590, "市示范高中": 490, "普通高中": 360 } }
-            ],
-            tip: "宣城中学等名校录取线约680+。"
-        },
-        // === 江门 ===
-        {
-            city: "江门", province: "广东省", totalScore: 800,
-            years: [
-                { year: 2024, lines: { "重点高中": 660, "普通高中": 490, "最低控制线": 380 } },
-                { year: 2023, lines: { "重点高中": 650, "普通高中": 480, "最低控制线": 370 } },
-                { year: 2022, lines: { "重点高中": 640, "普通高中": 470, "最低控制线": 360 } },
-                { year: 2021, lines: { "重点高中": 630, "普通高中": 460, "最低控制线": 350 } }
-            ],
-            tip: "江门一中、新会一中等名校录取线约720+。"
-        },
-        // === 肇庆 ===
-        {
-            city: "肇庆", province: "广东省", totalScore: 800,
-            years: [
-                { year: 2024, lines: { "重点高中": 640, "普通高中": 470, "最低控制线": 360 } },
-                { year: 2023, lines: { "重点高中": 630, "普通高中": 460, "最低控制线": 350 } },
-                { year: 2022, lines: { "重点高中": 620, "普通高中": 450, "最低控制线": 340 } },
-                { year: 2021, lines: { "重点高中": 610, "普通高中": 440, "最低控制线": 330 } }
-            ],
-            tip: "肇庆中学等名校录取线约700+。"
-        },
-        // === 茂名 ===
-        {
-            city: "茂名", province: "广东省", totalScore: 800,
-            years: [
-                { year: 2024, lines: { "重点高中": 620, "普通高中": 450, "最低控制线": 340 } },
-                { year: 2023, lines: { "重点高中": 610, "普通高中": 440, "最低控制线": 330 } },
-                { year: 2022, lines: { "重点高中": 600, "普通高中": 430, "最低控制线": 320 } },
-                { year: 2021, lines: { "重点高中": 590, "普通高中": 420, "最低控制线": 310 } }
-            ],
-            tip: "茂名一中等名校录取线约690+。"
-        },
-        // === 揭阳 ===
-        {
-            city: "揭阳", province: "广东省", totalScore: 800,
-            years: [
-                { year: 2024, lines: { "重点高中": 620, "普通高中": 450, "最低控制线": 340 } },
-                { year: 2023, lines: { "重点高中": 610, "普通高中": 440, "最低控制线": 330 } },
-                { year: 2022, lines: { "重点高中": 600, "普通高中": 430, "最低控制线": 320 } },
-                { year: 2021, lines: { "重点高中": 590, "普通高中": 420, "最低控制线": 310 } }
-            ],
-            tip: "揭阳一中、华侨中学等名校录取线约690+。"
-        },
-        // === 清远 ===
-        {
-            city: "清远", province: "广东省", totalScore: 800,
-            years: [
-                { year: 2024, lines: { "重点高中": 610, "普通高中": 440, "最低控制线": 330 } },
-                { year: 2023, lines: { "重点高中": 600, "普通高中": 430, "最低控制线": 320 } },
-                { year: 2022, lines: { "重点高中": 590, "普通高中": 420, "最低控制线": 310 } },
-                { year: 2021, lines: { "重点高中": 580, "普通高中": 410, "最低控制线": 300 } }
-            ],
-            tip: "清远一中等名校录取线约680+。"
-        },
-        // === 韶关 ===
-        {
-            city: "韶关", province: "广东省", totalScore: 800,
-            years: [
-                { year: 2024, lines: { "重点高中": 620, "普通高中": 450, "最低控制线": 340 } },
-                { year: 2023, lines: { "重点高中": 610, "普通高中": 440, "最低控制线": 330 } },
-                { year: 2022, lines: { "重点高中": 600, "普通高中": 430, "最低控制线": 320 } },
-                { year: 2021, lines: { "重点高中": 590, "普通高中": 420, "最低控制线": 310 } }
-            ],
-            tip: "韶关一中、北中等名校录取线约690+。"
-        },
-        // === 梅州 ===
-        {
-            city: "梅州", province: "广东省", totalScore: 800,
-            years: [
-                { year: 2024, lines: { "重点高中": 610, "普通高中": 440, "最低控制线": 330 } },
-                { year: 2023, lines: { "重点高中": 600, "普通高中": 430, "最低控制线": 320 } },
-                { year: 2022, lines: { "重点高中": 590, "普通高中": 420, "最低控制线": 310 } },
-                { year: 2021, lines: { "重点高中": 580, "普通高中": 410, "最低控制线": 300 } }
-            ],
-            tip: "梅州中学、东山中学等名校录取线约680+。"
-        },
-        // === 北海 ===
-        {
-            city: "北海", province: "广西壮族自治区", totalScore: 680,
-            years: [
-                { year: 2024, lines: { "自治区示范性高中(重点)": 555, "市示范性高中": 450, "普通高中": 330 } },
-                { year: 2023, lines: { "自治区示范性高中(重点)": 545, "市示范性高中": 440, "普通高中": 320 } },
-                { year: 2022, lines: { "自治区示范性高中(重点)": 535, "市示范性高中": 430, "普通高中": 310 } },
-                { year: 2021, lines: { "自治区示范性高中(重点)": 525, "市示范性高中": 420, "普通高中": 300 } }
-            ],
-            tip: "北海中学等名校录取线约605+。"
-        },
-        // === 玉林 ===
-        {
-            city: "玉林", province: "广西壮族自治区", totalScore: 680,
-            years: [
-                { year: 2024, lines: { "自治区示范性高中(重点)": 550, "市示范性高中": 445, "普通高中": 325 } },
-                { year: 2023, lines: { "自治区示范性高中(重点)": 540, "市示范性高中": 435, "普通高中": 315 } },
-                { year: 2022, lines: { "自治区示范性高中(重点)": 530, "市示范性高中": 425, "普通高中": 305 } },
-                { year: 2021, lines: { "自治区示范性高中(重点)": 520, "市示范性高中": 415, "普通高中": 295 } }
-            ],
-            tip: "玉林高中、一中等名校录取线约600+。"
-        },
-        // === 百色 ===
-        {
-            city: "百色", province: "广西壮族自治区", totalScore: 680,
-            years: [
-                { year: 2024, lines: { "自治区示范性高中(重点)": 530, "市示范性高中": 425, "普通高中": 305 } },
-                { year: 2023, lines: { "自治区示范性高中(重点)": 520, "市示范性高中": 415, "普通高中": 295 } },
-                { year: 2022, lines: { "自治区示范性高中(重点)": 510, "市示范性高中": 405, "普通高中": 285 } },
-                { year: 2021, lines: { "自治区示范性高中(重点)": 500, "市示范性高中": 395, "普通高中": 275 } }
-            ],
-            tip: "百色高中等名校录取线约585+。"
-        },
-        // === 安顺 ===
-        {
-            city: "安顺", province: "贵州省", totalScore: 650,
-            years: [
-                { year: 2024, lines: { "省级示范性高中(重点)": 540, "市级示范性高中": 440, "普通高中": 320 } },
-                { year: 2023, lines: { "省级示范性高中(重点)": 530, "市级示范性高中": 430, "普通高中": 310 } },
-                { year: 2022, lines: { "省级示范性高中(重点)": 520, "市级示范性高中": 420, "普通高中": 300 } },
-                { year: 2021, lines: { "省级示范性高中(重点)": 510, "市级示范性高中": 410, "普通高中": 290 } }
-            ],
-            tip: "安顺一中等名校录取线约585+。"
-        },
-        // === 毕节 ===
-        {
-            city: "毕节", province: "贵州省", totalScore: 650,
-            years: [
-                { year: 2024, lines: { "省级示范性高中(重点)": 530, "市级示范性高中": 430, "普通高中": 310 } },
-                { year: 2023, lines: { "省级示范性高中(重点)": 520, "市级示范性高中": 420, "普通高中": 300 } },
-                { year: 2022, lines: { "省级示范性高中(重点)": 510, "市级示范性高中": 410, "普通高中": 290 } },
-                { year: 2021, lines: { "省级示范性高中(重点)": 500, "市级示范性高中": 400, "普通高中": 280 } }
-            ],
-            tip: "毕节一中等名校录取线约575+。"
-        },
-        // === 铜仁 ===
-        {
-            city: "铜仁", province: "贵州省", totalScore: 650,
-            years: [
-                { year: 2024, lines: { "省级示范性高中(重点)": 530, "市级示范性高中": 430, "普通高中": 310 } },
-                { year: 2023, lines: { "省级示范性高中(重点)": 520, "市级示范性高中": 420, "普通高中": 300 } },
-                { year: 2022, lines: { "省级示范性高中(重点)": 510, "市级示范性高中": 410, "普通高中": 290 } },
-                { year: 2021, lines: { "省级示范性高中(重点)": 500, "市级示范性高中": 400, "普通高中": 280 } }
-            ],
-            tip: "铜仁一中等名校录取线约575+。"
-        },
-        // === 六盘水 ===
-        {
-            city: "六盘水", province: "贵州省", totalScore: 650,
-            years: [
-                { year: 2024, lines: { "省级示范性高中(重点)": 530, "市级示范性高中": 430, "普通高中": 310 } },
-                { year: 2023, lines: { "省级示范性高中(重点)": 520, "市级示范性高中": 420, "普通高中": 300 } },
-                { year: 2022, lines: { "省级示范性高中(重点)": 510, "市级示范性高中": 410, "普通高中": 290 } },
-                { year: 2021, lines: { "省级示范性高中(重点)": 500, "市级示范性高中": 400, "普通高中": 280 } }
-            ],
-            tip: "六盘水一中等名校录取线约575+。"
-        }
-    ];
+    const STORE = window.CITY_DATA || { meta:{}, cities:[] };
+    const CITY_DATA = STORE.cities;
+    const DATA_TOTAL = STORE.meta.total || CITY_DATA.length;
+    const ST = STORE.meta.stats || {};
 
-    // ============ 功能逻辑 ============
     const searchInput = document.getElementById('searchInput');
     const suggestionsEl = document.getElementById('suggestions');
     const resultsEl = document.getElementById('results');
-    const allCitiesSection = document.getElementById('allCitiesSection');
 
-    // 初始化城市网格
-    function initCityGrid() {
-        const grid = document.getElementById('cityGrid');
-        grid.innerHTML = CITY_DATA.map(c =>
-            `<div class="city-grid-item" onclick="quickSearch('${c.city}')">${c.city}</div>`
-        ).join('');
+    document.getElementById('coverageInfo').innerHTML =
+        `已收录 ${DATA_TOTAL} 个城市 · 已验证 ${ST.verified+ST.mixed||0} · 待核实 ${ST.legacy||0} · 待补充 ${ST.pending||0}`;
+
+    const STATUS_LABEL = { verified:'已验证', mixed:'部分验证', legacy:'待核实', pending:'待补充' };
+
+    // ---------- helpers ----------
+    function cityByName(n){ return CITY_DATA.find(c => c.city === n); }
+    function orderedLines(yearData){
+        return Object.entries(yearData.lines || {}).sort((a,b)=> b[1]-a[1]);
+    }
+    function keyAndNormal(yearData){
+        const entries = orderedLines(yearData);
+        if (!entries.length) return { key:null, normal:null, entries:[] };
+        const key = entries[0];                              // 分值最高 = 重点线
+        const lowest = entries[entries.length-1];            // 分值最低 = 普高/控制线
+        const normal = (entries.length>=2) ? lowest : key;
+        return { key:{name:key[0], score:key[1]}, normal:{name:normal[0], score:normal[1]}, entries };
+    }
+    function latestDataYear(city){
+        return (city.years||[]).find(y => Object.keys(y.lines||{}).length>0) || null;
+    }
+    function hasData(city){ return (city.years||[]).some(y => Object.keys(y.lines||{}).length>0); }
+    // 优先选"最新且有≥2条分数线"的年份做默认，保证重点/普高分差对比有意义；否则退回最新有数据年份
+    function bestDefaultYear(city){
+        const dataYears=(city.years||[]).filter(y=>Object.keys(y.lines||{}).length>0);
+        const rich=dataYears.find(y=>Object.keys(y.lines).length>=2);
+        return rich || dataYears[0] || null;
+    }
+    function yearConfBadge(yearData){
+        if (yearData.confidence==='verified-high') return '<span class="conf-badge verified">已验证</span>';
+        if (yearData.confidence==='legacy-low') return '<span class="conf-badge legacy">待核实</span>';
+        return '<span class="conf-badge pending">待补充</span>';
     }
 
-    // 搜索建议
-    searchInput.addEventListener('input', function() {
-        const val = this.value.trim();
-        if (!val) {
-            suggestionsEl.classList.remove('show');
+    // ---------- mode switch ----------
+    function switchMode(m){
+        const searchBtn=document.getElementById('modeSearchBtn'), calcBtn=document.getElementById('modeCalcBtn');
+        const searchArea=document.getElementById('searchMode'), calcArea=document.getElementById('calcMode');
+        if (m==='search'){ searchBtn.classList.add('active'); calcBtn.classList.remove('active'); searchArea.classList.remove('hidden'); calcArea.classList.add('hidden'); }
+        else { calcBtn.classList.add('active'); searchBtn.classList.remove('active'); calcArea.classList.remove('hidden'); searchArea.classList.add('hidden'); initCalc(); }
+    }
+
+    // ---------- search ----------
+    searchInput.addEventListener('input', function(){
+        const val=this.value.trim();
+        if(!val){ suggestionsEl.classList.remove('show'); return; }
+        const matches=CITY_DATA.filter(c=>c.city.includes(val)||c.province.includes(val)||val.includes(c.city)).slice(0,12);
+        if(matches.length){
+            suggestionsEl.innerHTML=matches.map(c=>{
+                const has=hasData(c);
+                const flag=has?`<span class="flag" style="background:#eef0ff;color:#667eea">${STATUS_LABEL[c.status]}</span>`:`<span class="flag" style="background:#fdecec;color:#e05656">待补充</span>`;
+                return `<div class="suggestion-item" onclick="selectCity('${c.city}')">${c.city}<span class="province">${c.province}</span>${flag}</div>`;
+            }).join('');
+            suggestionsEl.classList.add('show');
+        } else suggestionsEl.classList.remove('show');
+    });
+    searchInput.addEventListener('keydown',e=>{ if(e.key==='Enter') doSearch(); });
+    document.addEventListener('click',e=>{ if(!e.target.closest('.search-input-container')) suggestionsEl.classList.remove('show'); });
+
+    function selectCity(city){ searchInput.value=city; suggestionsEl.classList.remove('show'); doSearch(); }
+    function quickSearch(city){ searchInput.value=city; doSearch(); }
+
+    function doSearch(){
+        const val=searchInput.value.trim(); if(!val) return;
+        suggestionsEl.classList.remove('show');
+        const matches=CITY_DATA.filter(c=>c.city.includes(val)||c.province.includes(val)||val.includes(c.city));
+        if(!matches.length){
+            resultsEl.innerHTML=`<div class="card"><div class="no-data">未找到"${val}"的数据<br><span style="font-size:13px;">请尝试省份名或其他城市，或联系培训部补充</span></div></div>`;
             return;
         }
-        const matches = CITY_DATA.filter(c =>
-            c.city.includes(val) || c.province.includes(val)
-        ).slice(0, 8);
-
-        if (matches.length > 0) {
-            suggestionsEl.innerHTML = matches.map(c =>
-                `<div class="suggestion-item" onclick="selectCity('${c.city}')">
-                    ${c.city}<span class="province">${c.province}</span>
-                </div>`
-            ).join('');
-            suggestionsEl.classList.add('show');
-        } else {
-            suggestionsEl.classList.remove('show');
-        }
-    });
-
-    searchInput.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') doSearch();
-    });
-
-    document.addEventListener('click', function(e) {
-        if (!e.target.closest('.search-input-container')) {
-            suggestionsEl.classList.remove('show');
-        }
-    });
-
-    function selectCity(city) {
-        searchInput.value = city;
-        suggestionsEl.classList.remove('show');
-        doSearch();
+        matches.sort((a,b)=>(hasData(b)-hasData(a)) || a.city.localeCompare(b.city,'zh'));
+        const toShow=matches.slice(0,8);
+        resultsEl.innerHTML=toShow.map(renderCityCard).join('') +
+            (matches.length>8?`<div class="card"><div class="no-data">"${val}" 共匹配 ${matches.length} 个城市，已展示前 8 个，可输入更精确的城市名</div></div>`:'');
     }
 
-    function quickSearch(city) {
-        searchInput.value = city;
-        doSearch();
-    }
-
-    function doSearch() {
-        const val = searchInput.value.trim();
-        if (!val) return;
-
-        suggestionsEl.classList.remove('show');
-        allCitiesSection.style.display = 'none';
-
-        // 模糊搜索：城市名或省份名
-        const matches = CITY_DATA.filter(c =>
-            c.city.includes(val) || c.province.includes(val) || val.includes(c.city)
-        );
-
-        if (matches.length === 0) {
-            resultsEl.innerHTML = `
-                <div class="no-result">
-                    <div class="no-result-icon">🔍</div>
-                    <div class="no-result-text">未找到"${val}"的中考数据</div>
-                    <div class="no-result-hint">请尝试输入省份名或其他城市名，或联系培训部添加数据</div>
-                </div>
-            `;
-        } else {
-            resultsEl.innerHTML = matches.map(c => renderCityCard(c)).join('');
-        }
-        resultsEl.classList.add('show');
-    }
-
-    function renderCityCard(cityData) {
-        const latestYear = cityData.years[0];
-        const lineKeys = Object.keys(latestYear.lines);
-        const primaryKey = lineKeys[0]; // 第一条线作为重点线
-
-        // 趋势数据
-        const trendData = [...cityData.years].reverse();
-        const maxScore = Math.max(...trendData.map(y => y.lines[primaryKey]));
-
-        const trendBars = trendData.map(y => {
-            const keyVal = y.lines[primaryKey];
-            const normalKey = Object.keys(y.lines).find(k => k.includes('普通'));
-            const normalVal = normalKey ? y.lines[normalKey] : 0;
-            const keyHeight = (keyVal / maxScore) * 60;
-            const normalHeight = normalVal ? (normalVal / maxScore) * 60 : 0;
-            return `
-                <div class="trend-bar-group">
-                    <div class="trend-bar-value">${keyVal}</div>
-                    <div class="trend-bar key" style="height:${keyHeight}px"></div>
-                    <div class="trend-bar-label">${y.year}</div>
-                </div>
-            `;
-        }).join('');
-
-        return `
-            <div class="city-card">
+    function renderCityCard(city){
+        const yId='yearTabs_'+encodeURIComponent(city.city);
+        const sId='scoreLines_'+encodeURIComponent(city.city);
+        const confBadge=`<span class="conf-badge ${city.status}">${STATUS_LABEL[city.status]}</span>`;
+        if(!hasData(city)){
+            return `<div class="card">
                 <div class="city-card-header">
                     <div>
-                        <div class="city-name">${cityData.city}</div>
-                        <div class="city-province">${cityData.province}</div>
-                    </div>
-                    <div class="total-score-badge">满分 ${cityData.totalScore} 分</div>
-                </div>
-
-                <div class="year-tabs" id="yearTabs_${cityData.city}">
-                    ${cityData.years.map((y, i) =>
-                        `<div class="year-tab ${i===0?'active':''}" onclick="switchYear('${cityData.city}', ${i})">${y.year}年</div>`
-                    ).join('')}
-                </div>
-
-                <div class="score-lines" id="scoreLines_${cityData.city}">
-                    ${renderScoreLines(latestYear.lines, cityData.totalScore)}
-                </div>
-
-                <div class="trend-section">
-                    <div class="trend-title">📈 ${primaryKey} 历年趋势</div>
-                    <div class="trend-chart">${trendBars}</div>
-                    <div class="legend">
-                        <div class="legend-item"><div class="legend-dot key"></div>${primaryKey}</div>
+                        <div class="city-name">${city.city}</div>
+                        <div class="city-province">${city.province}</div>
+                        <div class="badge-row">${confBadge}</div>
                     </div>
                 </div>
-
-                ${cityData.tip ? `
-                <div class="tip-card">
-                    <div class="tip-card-title">💡 沟通参考</div>
-                    <div class="tip-card-content">${cityData.tip}</div>
-                </div>` : ''}
-            </div>
-        `;
-    }
-
-    function renderScoreLines(lines, totalScore) {
-        return Object.entries(lines).map(([name, score]) => {
-            const pct = (score / totalScore * 100).toFixed(1);
-            return `
-                <div class="score-line-item">
-                    <div class="score-detail">
-                        <div class="score-line-label">${name}</div>
-                        <div class="score-line-bar">
-                            <div class="score-line-bar-fill" style="width:${pct}%"></div>
-                        </div>
-                    </div>
-                    <div>
-                        <span class="score-line-value">${score}</span>
-                        <span class="score-line-unit">分 (${pct}%)</span>
-                    </div>
-                </div>
-            `;
+                <div class="no-data">该城市暂无公开分数线数据，欢迎补充<br><span class="feedback-link" onclick="alert('请把教育局公告链接发到培训部群，我们会补充数据 🙌')">📮 提交线索</span></div>
+            </div>`;
+        }
+        const defaultYear=bestDefaultYear(city);
+        const defaultIdx=city.years.indexOf(defaultYear);
+        const tabs=city.years.map((y,i)=>{
+            const empty=Object.keys(y.lines||{}).length===0;
+            return `<div class="year-tab ${i===defaultIdx?'active':''} ${empty?'empty':''}" onclick="switchYear('${city.city}',${i},'${yId}','${sId}')">${y.year}${empty?'·空':''}</div>`;
         }).join('');
+        return `<div class="card">
+            <div class="city-card-header">
+                <div>
+                    <div class="city-name">${city.city}</div>
+                    <div class="city-province">${city.province}</div>
+                    <div class="badge-row">${confBadge}</div>
+                </div>
+                ${city.totalScore?`<div class="total-score-badge">满分 ${city.totalScore} 分</div>`:''}
+            </div>
+            <div class="year-tabs" id="${yId}">${tabs}</div>
+            <div class="score-lines" id="${sId}">${renderScoreLines(defaultYear, city)}</div>
+            ${renderTrend(city)}
+            ${city.tip?`<div class="tip-card"><div class="tip-card-title">💡 沟通参考</div><div class="tip-card-content">${city.tip}</div></div>`:''}
+            ${city.status==='legacy'?`<div class="disclaimer">⚠️ 该城市数据来自历史整理，尚未逐条核对官方公告，正式引用前请验证。</div>`:''}
+        </div>`;
     }
 
-    function switchYear(city, yearIndex) {
-        const cityData = CITY_DATA.find(c => c.city === city);
-        if (!cityData) return;
-
-        // 更新tab状态
-        const tabs = document.querySelectorAll(`#yearTabs_${city} .year-tab`);
-        tabs.forEach((t, i) => t.classList.toggle('active', i === yearIndex));
-
-        // 更新分数线
-        const yearData = cityData.years[yearIndex];
-        document.getElementById(`scoreLines_${city}`).innerHTML =
-            renderScoreLines(yearData.lines, cityData.totalScore);
+    function renderScoreLines(yearData, city){
+        if(!yearData || !Object.keys(yearData.lines||{}).length)
+            return `<div class="no-data">${yearData?yearData.year+'年':'该年'}暂无公开数据</div>`;
+        const lines=orderedLines(yearData);
+        return lines.map(([name,score])=>{
+            const pct=city.totalScore?(score/city.totalScore*100).toFixed(1):'';
+            const src=yearData.sources&&yearData.sources[name];
+            const srcHtml=src?`<div class="src-link"><a href="${src}" target="_blank" rel="noopener">📎 查看来源</a></div>`:'';
+            const note=yearData.notes&&yearData.notes[name];
+            const noteHtml=note?`<div class="src-link" style="color:#d48806">📝 ${note}</div>`:'';
+            return `<div class="score-line-item">
+                <div class="score-detail">
+                    <div class="score-line-label">${name}</div>
+                    <div class="score-line-bar"><div class="score-line-bar-fill" style="width:${pct||0}%"></div></div>
+                    ${srcHtml}${noteHtml}
+                </div>
+                <div>
+                    <span class="score-line-value">${score}</span>
+                    <span class="score-line-unit">${pct?'分 ('+pct+'%)':'分'}</span>
+                </div>
+            </div>`;
+        }).join('')+`<div style="margin-top:4px">${yearConfBadge(yearData)}</div>`;
     }
 
-    // 初始化
-    initCityGrid();
+    function renderTrend(city){
+        const dataYears=city.years.filter(y=>Object.keys(y.lines||{}).length>0);
+        if(dataYears.length<2) return '';
+        const chrono=[...dataYears].sort((a,b)=>a.year-b.year);
+        const keyName=keyAndNormal(chrono[0]).key;
+        if(!keyName) return '';
+        const vals=chrono.map(y=>{ const e=orderedLines(y)[0]; return e?e[1]:0; });
+        const maxV=Math.max(...vals)||1;
+        const bars=chrono.map((y,i)=>{
+            const e=orderedLines(y)[0]; const v=e?e[1]:0; const h=(v/maxV)*58+8;
+            return `<div class="trend-bar-group"><div class="trend-bar-value">${v}</div><div class="trend-bar" style="height:${h}px"></div><div class="trend-bar-label">${y.year}</div></div>`;
+        }).join('');
+        return `<div class="trend-section"><div class="trend-title">📈 重点线（${keyName.name}）历年趋势</div><div class="trend-chart">${bars}</div></div>`;
+    }
+
+    function switchYear(city, i, yId, sId){
+        const c=cityByName(city); if(!c) return;
+        document.querySelectorAll('#'+CSS.escape(yId)+' .year-tab').forEach((t,idx)=>t.classList.toggle('active',idx===i));
+        document.getElementById(sId).innerHTML=renderScoreLines(c.years[i], c);
+    }
+
+    // ---------- 分数测评 ----------
+    let calcInputMode='total';
+    let calcInitialized=false;
+    function initCalc(){
+        if(calcInitialized){ return; }
+        calcInitialized=true;
+        document.getElementById('calcCityList').innerHTML=CITY_DATA.filter(hasData).map(c=>`<option value="${c.city}">${c.province}</option>`).join('');
+        addSubjectRow('语文'); addSubjectRow('数学'); addSubjectRow('英语');
+    }
+    function onCalcCityInput(){
+        const name=document.getElementById('calcCityInput').value.trim();
+        const c=cityByName(name);
+        const field=document.getElementById('calcYearField');
+        const sel=document.getElementById('calcYearSelect');
+        if(c && hasData(c)){
+            const dataYears=c.years.filter(y=>Object.keys(y.lines||{}).length>0);
+            const defY=bestDefaultYear(c);
+            field.style.display='';
+            sel.innerHTML=dataYears.map((y)=>{ const k=keyAndNormal(y).key, n=keyAndNormal(y).normal; return `<option value="${y.year}" ${y===defY?'selected':''}>${y.year}年 · 重点${k?k.score:'—'}分 / 普高${n?n.score:'—'}分</option>`; }).join('');
+        } else field.style.display='none';
+    }
+    function onCalcYearChange(){}
+
+    function switchInputMode(m){
+        calcInputMode=m;
+        document.getElementById('inputTotalBtn').classList.toggle('active',m==='total');
+        document.getElementById('inputSubjBtn').classList.toggle('active',m==='subject');
+        document.getElementById('totalInputArea').classList.toggle('hidden',m!=='total');
+        document.getElementById('subjectInputArea').classList.toggle('hidden',m!=='subject');
+    }
+    function addSubjectRow(name){
+        const wrap=document.getElementById('subjectRows');
+        const row=document.createElement('div'); row.className='subj-row';
+        row.innerHTML=`<input class="name" type="text" placeholder="科目名" value="${name||''}"><input class="score" type="number" placeholder="分数" min="0" oninput="updateSubjectSum()"><button class="subj-del" onclick="delSubjectRow(this)">×</button>`;
+        wrap.appendChild(row);
+    }
+    function delSubjectRow(btn){ btn.parentElement.remove(); updateSubjectSum(); }
+    function updateSubjectSum(){
+        let sum=0;
+        document.querySelectorAll('#subjectRows .score').forEach(i=>{ sum+=parseFloat(i.value)||0; });
+        document.getElementById('subjectSum').textContent=sum;
+    }
+
+    function doCalc(){
+        const out=document.getElementById('calcResults');
+        const cityName=document.getElementById('calcCityInput').value.trim();
+        const c=cityByName(cityName);
+        if(!c){ out.innerHTML=`<div class="card"><div class="no-data">请选择一个有数据的城市</div></div>`; return; }
+        if(!hasData(c)){ out.innerHTML=`<div class="card"><div class="no-data">${c.city}暂无公开分数线数据，无法测评</div></div>`; return; }
+        const year=parseInt(document.getElementById('calcYearSelect').value)|| bestDefaultYear(c).year;
+        const yearData=c.years.find(y=>y.year===year);
+        if(!yearData||!Object.keys(yearData.lines||{}).length){ out.innerHTML=`<div class="card"><div class="no-data">${year}年暂无数据</div></div>`; return; }
+
+        let total;
+        if(calcInputMode==='total'){ total=parseFloat(document.getElementById('totalScoreInput').value); }
+        else { total=0; document.querySelectorAll('#subjectRows .score').forEach(i=>total+=parseFloat(i.value)||0); }
+        if(total===undefined||isNaN(total)||total<=0){ out.innerHTML=`<div class="card"><div class="no-data">请输入有效的分数</div></div>`; return; }
+
+        const {key,normal,entries}=keyAndNormal(yearData);
+        out.innerHTML=renderCalcResult(c, yearData, total, key, normal, entries);
+    }
+
+    function renderCalcResult(city, yearData, total, key, normal, entries){
+        const keyScore=key.score, normScore=normal.score;
+        const passKey=total>=keyScore, passNorm=total>=normScore;
+
+        let verdictClass, verdictBig, verdictSub;
+        if(passKey){ verdictClass='pass-key'; verdictBig='🎉 达重点高中线'; verdictSub=`超过${key.name} ${(total-keyScore)} 分`; }
+        else if(passNorm){ verdictClass='pass-normal'; verdictBig='✅ 达普通高中线'; verdictSub=`过普高 ${(total-normScore)} 分，距重点还差 ${(keyScore-total)} 分`; }
+        else { verdictClass='below'; verdictBig='⚠️ 未达普高线'; verdictSub=`距${normal.name}还差 ${(normScore-total)} 分`; }
+
+        function gapHtml(target, tname){
+            const diff=total-target;
+            const cls=diff>=0?'up':'down';
+            const arrow=diff>=0?'↑ 超出':'↓ 差';
+            return `<div class="gap-item"><div class="lbl">${tname} · ${target}分</div><div class="val ${cls}">${arrow} ${Math.abs(diff)}<span class="suf"> 分</span></div></div>`;
+        }
+
+        const tierItems=entries.map(([name,score])=>{
+            const hit=total>=score;
+            return `<div class="tier-item ${hit?'hit':'miss'}"><div><span class="t-name">${name}</span> <span class="t-line">(${score}分)</span></div><span class="t-flag">${hit?'达标 ✓':'未达 · 差'+(score-total)+'分'}</span></div>`;
+        }).join('');
+
+        let analysis='';
+        const pct=city.totalScore?(total/city.totalScore*100).toFixed(1):null;
+        if(passKey){
+            analysis=`考生总分 <b>${total}</b> 分${pct?`（约占满分 ${pct}%）`:''}，已越过重点高中线 <b>${key.name}</b>（${keyScore}分）。${keyScore>normScore?`领先普高线 <b>${(total-normScore)}</b> 分，可选择的学校层次较宽裕。`:''}建议把优势转化为更好的目标校——关注该校的分区/指标到校名额与实验班线，冲刺更高平台。`;
+        } else if(passNorm){
+            analysis=`考生总分 <b>${total}</b> 分${pct?`（约占满分 ${pct}%）`:''}，已过普高线（${normScore}分），但距重点线 <b>${key.name}</b>（${keyScore}分）还差 <b>${keyScore-total}</b> 分。这一段是提分性价比较高的空间——通常补强 1～2 个薄弱学科就能跨过重点门槛，是冲刺阶段最值得投入的目标。`;
+        } else {
+            analysis=`考生总分 <b>${total}</b> 分${pct?`（约占满分 ${pct}%）`:''}，距普高线（${normScore}分）还差 <b>${normScore-total}</b> 分。当前应稳住基础分、优先攻提分快的科目，先把普高线守住，再谈重点。`;
+        }
+
+        return `<div class="card">
+            <div class="city-card-header" style="margin-bottom:14px;">
+                <div>
+                    <div class="city-name">${city.city} · ${yearData.year}年</div>
+                    <div class="city-province">${city.province}${city.totalScore?` · 中考满分 ${city.totalScore} 分`:''} · 考生总分 <b style="color:#667eea">${total}</b> 分</div>
+                </div>
+                ${yearConfBadge(yearData)}
+            </div>
+            <div class="result-verdict ${verdictClass}"><div class="big">${verdictBig}</div><div class="sub">${verdictSub}</div></div>
+            <div class="gap-grid">
+                ${gapHtml(keyScore, '重点线')}
+                ${gapHtml(normScore, '普高线')}
+            </div>
+            <div class="analysis-card"><h4>📋 各档位达标情况</h4><div class="tier-list" style="margin:0;">${tierItems}</div></div>
+            <div class="analysis-card"><h4>💡 简要分析</h4><p>${analysis}</p></div>
+            ${city.status==='legacy'?`<div class="disclaimer">⚠️ 该城市分数线为历史整理数据、尚未核对官方公告，测评结果仅供参考。</div>`:''}
+        </div>`;
+    }
     </script>
 </body>
 </html>
