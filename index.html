@@ -154,6 +154,41 @@
         .footer { text-align: center; padding: 20px; color: rgba(255,255,255,0.7); font-size: 12px; }
         .hidden { display: none; }
 
+        /* 规划报告 */
+        .report-btn { width: 100%; padding: 14px; margin-top: 6px; background: linear-gradient(135deg, #ff8a3d, #ff5e62); color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; }
+        .report-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(255,94,98,0.35); }
+        .report { background: white; border: 1px solid #eee; border-radius: 16px; padding: 26px 24px; margin-top: 16px; box-shadow: 0 20px 60px rgba(0,0,0,0.15); }
+        .report-head { text-align: center; border-bottom: 2px solid #667eea; padding-bottom: 14px; margin-bottom: 18px; }
+        .report-head h2 { font-size: 21px; color: #333; }
+        .report-head .r-sub { font-size: 13px; color: #888; margin-top: 6px; }
+        .report-sec { margin-bottom: 18px; }
+        .report-sec h3 { font-size: 15px; color: #667eea; margin-bottom: 10px; padding-left: 8px; border-left: 4px solid #667eea; }
+        .report-sec p { font-size: 14px; color: #555; line-height: 1.75; }
+        .report-sec b { color: #333; }
+        .kv-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 4px 0; }
+        .kv-box { background: #f8f9ff; border-radius: 10px; padding: 12px; text-align: center; }
+        .kv-box .k { font-size: 12px; color: #888; }
+        .kv-box .v { font-size: 20px; font-weight: 700; color: #667eea; margin-top: 4px; }
+        .countdown { background: linear-gradient(135deg, #fff2e8, #ffe7e7); border-radius: 12px; padding: 16px; text-align: center; margin: 4px 0; }
+        .countdown .cd-num { font-size: 30px; font-weight: 800; color: #ff5e62; }
+        .countdown .cd-txt { font-size: 13px; color: #b04a4a; margin-top: 4px; }
+        .talk-box { background: #f6fff8; border: 1px solid #c8f0d2; border-radius: 12px; padding: 14px 16px; margin-bottom: 10px; }
+        .talk-box .talk-tag { font-size: 12px; font-weight: 700; color: #17a44a; margin-bottom: 6px; }
+        .talk-box .talk-text { font-size: 14px; color: #444; line-height: 1.8; }
+        .talk-inner-note { font-size: 12px; color: #999; background: #f0f0f5; border-radius: 8px; padding: 8px 12px; margin-top: 4px; line-height: 1.6; }
+        .report-actions { display: flex; gap: 10px; margin-top: 16px; }
+        .report-actions button { flex: 1; padding: 12px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; border: 1px solid #667eea; background: white; color: #667eea; }
+        .report-actions button.primary { background: #667eea; color: white; }
+        .stage-list { list-style: none; }
+        .stage-list li { font-size: 13px; color: #555; line-height: 1.7; padding: 8px 0 8px 22px; position: relative; border-bottom: 1px dashed #eee; }
+        .stage-list li:last-child { border-bottom: none; }
+        .stage-list li::before { content: '▸'; position: absolute; left: 4px; color: #667eea; font-weight: 700; }
+        @media print {
+            body { background: white; padding: 0; }
+            .mode-switch, #searchMode, .card, .footer, .report-btn, .report-actions, .header { display: none !important; }
+            .report { box-shadow: none; border: none; }
+        }
+
         @media (max-width: 600px) {
             body { padding: 12px; }
             .header h1 { font-size: 21px; }
@@ -214,6 +249,19 @@
                 <div class="calc-field" id="calcYearField" style="display:none;">
                     <label>选择年份</label>
                     <select class="calc-select" id="calcYearSelect" onchange="onCalcYearChange()"></select>
+                </div>
+
+                <div class="calc-field">
+                    <label>孩子年级（用于生成规划报告）</label>
+                    <select class="calc-select" id="calcGradeSelect">
+                        <option value="初一">初一</option>
+                        <option value="初二">初二</option>
+                        <option value="初三" selected>初三</option>
+                    </select>
+                </div>
+                <div class="calc-field">
+                    <label>孩子称呼（选填，报告中更亲切）</label>
+                    <input type="text" class="calc-select" id="calcNameInput" placeholder="如：小明 / 孩子" autocomplete="off">
                 </div>
 
                 <div class="input-mode-switch">
@@ -418,6 +466,7 @@
     // ---------- 分数测评 ----------
     let calcInputMode='total';
     let calcInitialized=false;
+    let lastCalc=null;
     function initCalc(){
         if(calcInitialized){ return; }
         calcInitialized=true;
@@ -474,6 +523,9 @@
         if(total===undefined||isNaN(total)||total<=0){ out.innerHTML=`<div class="card"><div class="no-data">请输入有效的分数</div></div>`; return; }
 
         const {key,normal,entries}=keyAndNormal(yearData);
+        const grade=document.getElementById('calcGradeSelect').value;
+        const name=(document.getElementById('calcNameInput').value.trim())||'孩子';
+        lastCalc={city:c, yearData, total, key, normal, entries, grade, name};
         out.innerHTML=renderCalcResult(c, yearData, total, key, normal, entries);
     }
 
@@ -523,8 +575,157 @@
             </div>
             <div class="analysis-card"><h4>📋 各档位达标情况</h4><div class="tier-list" style="margin:0;">${tierItems}</div></div>
             <div class="analysis-card"><h4>💡 简要分析</h4><p>${analysis}</p></div>
+            <button class="report-btn" onclick="genReport()">📄 生成给家长的中考规划报告</button>
+            <div id="reportArea"></div>
             ${city.status==='legacy'?`<div class="disclaimer">⚠️ 该城市分数线为历史整理数据、尚未核对官方公告，测评结果仅供参考。</div>`:''}
         </div>`;
+    }
+
+    // ---------- 规划报告 ----------
+    function examCountdown(grade){
+        const now=new Date();
+        let y=now.getFullYear();
+        let exam=new Date(y, 5, 20);         // 各地多在6月中下旬
+        if(now>exam){ exam=new Date(y+1, 5, 20); }
+        const off={ '初三':0, '初二':1, '初一':2 }[grade] ?? 0;
+        exam.setFullYear(exam.getFullYear()+off);
+        const days=Math.ceil((exam-now)/86400000);
+        const months=Math.max(1, Math.round(days/30.4));
+        return { days, months, year:exam.getFullYear() };
+    }
+    function gradeQuote(grade){
+        if(grade==='初一') return '初一不分上下——现在内容不难，孩子间差距还没拉开，恰恰是最容易“悄悄掉队”的一年。';
+        if(grade==='初二') return '初二两极分化——60%的中考必考知识点都在初二完成，这一年掉下去，初三很难追回来。';
+        return '初三天上地下——最后这一年是真正的分水岭，每一分都直接决定能进哪所高中。';
+    }
+    function gradeStagePlan(grade){
+        if(grade==='初一') return ['适应初中节奏，把各科基础打牢，尤其是计算和英语词汇量','养成预习+复习+错题整理的闭环习惯','重点盯住学习习惯，而不是只盯一次分数'];
+        if(grade==='初二') return ['攻克几何、物理入门、英语语法三大“分化点”','把本学年60%的中考必考知识一次性吃透，不留到初三','开始有意识做专题训练，避免“会而不熟”'];
+        return ['按中考大纲做三轮复习，先补最薄弱、提分最快的科目','主攻代数综合、几何综合、函数与实验题等压轴题型','用好每次模考定位，按目标校倒推每科该拿的分数'];
+    }
+
+    function genReport(){
+        if(!lastCalc) return;
+        const {city, yearData, total, key, normal, entries, grade, name}=lastCalc;
+        const keyScore=key.score, normScore=normal.score;
+        const passKey=total>=keyScore, passNorm=total>=normScore;
+        const pct=city.totalScore?(total/city.totalScore*100).toFixed(1):null;
+        const cd=examCountdown(grade);
+        const gapKey=Math.max(0, keyScore-total);
+        const gapNorm=Math.max(0, normScore-total);
+        const leadKey=total-keyScore;
+        const leadNorm=total-normScore;
+        const mainSubjCount=3; // 语数英主科近似
+        const perSubj=gapKey>0?Math.ceil(gapKey/mainSubjCount):0;
+        const perMonth=gapKey>0?Math.ceil(gapKey/cd.months):0;
+
+        let 定位;
+        if(passKey) 定位=`<b>${name}</b> 这次考了 <b>${total}</b> 分${pct?`（约占满分 ${pct}%）`:''}，在 ${city.city} 已<b>稳稳越过重点高中线</b>（${keyScore}分），领先 <b>${leadKey}</b> 分。`;
+        else if(passNorm) 定位=`<b>${name}</b> 这次考了 <b>${total}</b> 分${pct?`（约占满分 ${pct}%）`:''}，已过 ${city.city} 普高线（${normScore}分），但距重点线（${keyScore}分）还差 <b>${gapKey}</b> 分——正好卡在“够得着重点、但要跳一跳”的关键区间。`;
+        else 定位=`<b>${name}</b> 这次考了 <b>${total}</b> 分${pct?`（约占满分 ${pct}%）`:''}，距 ${city.city} 普高线（${normScore}分）还差 <b>${gapNorm}</b> 分，当务之急是把基础分稳住、先守住普高。`;
+
+        // 目标拆解
+        let goalBlock;
+        if(passKey){
+            goalBlock=`孩子已经具备进重点的实力，接下来目标是<b>冲更好的平台和实验班</b>：关注目标校的指标到校名额、分招线和高位学校的实验班线。把当前优势科目继续拉高、别在优势科目上失分，比盲目补差更划算。`;
+        } else if(passNorm){
+            goalBlock=`要跨上重点线，还差 <b>${gapKey}</b> 分。拆开来其实并不可怕——<b>分摊到语数英三科，每科约提 ${perSubj} 分</b>；按距中考约 <b>${cd.months}</b> 个月算，<b>平均每月净提 ${perMonth} 分</b>即可。这些分大多藏在“会做但做错”“基础题失分”里，是提分最快、性价比最高的空间。`;
+        } else {
+            const perSubjN=Math.ceil(gapNorm/mainSubjCount), perMonthN=Math.ceil(gapNorm/cd.months);
+            goalBlock=`先盯住普高线，还差 <b>${gapNorm}</b> 分。这个分差完全够得着——<b>分摊到语数英三科，每科约补 ${perSubjN} 分</b>；按距中考约 <b>${cd.months}</b> 个月算，<b>平均每月净提 ${perMonthN} 分</b>就能守住普高。优先主攻提分快、分值占比大的科目，把基础题和中档题的分先拿满，再谈更高层次。`;
+        }
+
+        // 话术（仅老师参考，打印给家长时隐藏）
+        const talks=[
+            { tag:'【开场·成绩定位】', text:`家长您好，我按咱${city.city}的中考分数线给孩子做了个定位：${name}这次${total}分，${passKey?`已经稳过重点线${keyScore}分了，说明孩子基础是到位的`:passNorm?`过了普高线但离重点线${keyScore}分还差${gapKey}分，是那种“再逼一把就能上重点”的孩子`:`离普高线还差${gapNorm}分，现在是最需要抓一抓的阶段`}。` },
+            { tag:'【塑紧迫·学段关键】', text:`${gradeQuote(grade)} 而且您注意，${grade}离今年6月中考只剩大约<b>${cd.months}个月、${cd.days}天</b>了——看着还长，真正能用来提分的时间其实很紧，越早规划越从容。` },
+            { tag:'【给路径·拆解到分】', text:`${passKey?`孩子现在最该做的不是补差，而是保住优势、往更高平台冲，别在会做的题上丢分。`:passNorm?`这个分差听着大，其实拆到语数英三科每科也就${perSubj}分、平摊到每月${perMonth}分。我们帮孩子做的事，就是把“会而不熟”的那部分分数一格一格填回来，目标是可以量化、能盯着走的。`:`离普高的差距拆到语数英每科大概${Math.ceil(gapNorm/3)}分、平摊到每月${Math.ceil(gapNorm/cd.months)}分就能补回来。我们带孩子先把基础题、中档题的分稳稳拿住，普高线是完全够得着的。`}` },
+            { tag:'【给价值·为什么是我们】', text:`好课在线是独立的非营利性教育机构，孩子这边有老师出镜讲题、一对一诊断薄弱点，报名后课程无限次回放，没听懂的能反复看。我先给孩子安排一节诊断，把薄弱知识点定位准了，再定这${cd.months}个月怎么补，您看这周还是下周方便？` }
+        ];
+        const talksHtml=talks.map(t=>`<div class="talk-box"><div class="talk-tag">${t.tag}</div><div class="talk-text">${t.text}</div></div>`).join('');
+
+        const stages=gradeStagePlan(grade).map(s=>`<li>${s}</li>`).join('');
+        const lineRows=entries.map(([n,s])=>`<li>${n}：${s} 分${total>=s?'（孩子已达标 ✓）':'（孩子未达，差 '+(s-total)+' 分）'}</li>`).join('');
+
+        const html=`
+        <div class="report">
+            <div class="report-head">
+                <h2>${city.city} · ${grade}中考规划报告</h2>
+                <div class="r-sub">${name} | 参照 ${yearData.year} 年 ${city.city}分数线 | 生成于 ${new Date().toLocaleDateString('zh-CN')}</div>
+            </div>
+
+            <div class="report-sec">
+                <h3>一、成绩定位</h3>
+                <p>${定位}</p>
+                <div class="kv-grid">
+                    <div class="kv-box"><div class="k">孩子总分</div><div class="v">${total}</div></div>
+                    <div class="kv-box"><div class="k">重点线</div><div class="v">${keyScore}</div></div>
+                    <div class="kv-box"><div class="k">普高线</div><div class="v">${normScore}</div></div>
+                </div>
+            </div>
+
+            <div class="report-sec">
+                <h3>二、距离中考的时间</h3>
+                <div class="countdown"><div class="cd-num">${cd.months} 个月</div><div class="cd-txt">约 ${cd.days} 天 · 预计 ${cd.year} 年 6 月中考（${grade}毕业）</div></div>
+                <p style="margin-top:8px;">${gradeQuote(grade)}</p>
+            </div>
+
+            <div class="report-sec">
+                <h3>三、目标拆解与路径</h3>
+                <p>${goalBlock}</p>
+            </div>
+
+            <div class="report-sec">
+                <h3>四、${grade}阶段学习重点</h3>
+                <ul class="stage-list">${stages}</ul>
+            </div>
+
+            <div class="report-sec">
+                <h3>五、${city.city} ${yearData.year}年各档分数线（参照）</h3>
+                <ul class="stage-list">${lineRows}</ul>
+            </div>
+
+            <div class="no-print">
+                <div class="report-sec">
+                    <h3>六、老师沟通话术（内部参考·不随报告打印）</h3>
+                    <div class="talk-inner-note">下面话术供老师参考，可直接对家长说。正式展示/打印给家长的版本会自动隐藏此部分。</div>
+                    ${talksHtml}
+                </div>
+            </div>
+
+            <div class="report-actions no-print">
+                <button class="primary" onclick="copyTalks()">📋 复制话术</button>
+                <button onclick="window.print()">🖨️ 打印 / 存PDF给家长</button>
+            </div>
+
+            ${city.status==='legacy'?`<div class="disclaimer">⚠️ 分数线为历史整理数据、尚未核对官方公告，报告数据仅供参考。</div>`:''}
+        </div>`;
+        document.getElementById('reportArea').innerHTML=html;
+        document.getElementById('reportArea').scrollIntoView({behavior:'smooth', block:'start'});
+    }
+
+    function copyTalks(){
+        if(!lastCalc) return;
+        const {city, total, key, normal, grade, name}=lastCalc;
+        const cd=examCountdown(grade);
+        const keyScore=key.score, normScore=normal.score;
+        const passKey=total>=keyScore, passNorm=total>=normScore;
+        const gapKey=Math.max(0,keyScore-total), gapNorm=Math.max(0,normScore-total);
+        const lines=[
+            `【${city.city}·${grade}中考规划话术】`,
+            `1. 开场定位：家长您好，我按咱${city.city}的中考线给孩子做了定位：${name}这次${total}分，${passKey?`已稳过重点线${keyScore}分`:passNorm?`过了普高线但离重点${keyScore}分还差${gapKey}分`:`离普高线${normScore}还差${gapNorm}分`}。`,
+            `2. 塑紧迫：${gradeQuote(grade)} ${grade}离中考只剩约${cd.months}个月、${cd.days}天了。`,
+            `3. 给路径：${passKey?`保住优势、冲更高平台和实验班，别在会做的题上丢分。`:passNorm?`分差拆到语数英每科约${Math.ceil(gapKey/3)}分、平摊每月${Math.ceil(gapKey/cd.months)}分，是把“会而不熟”的分填回来。`:`离普高差距拆到语数英每科约${Math.ceil(gapNorm/3)}分、平摊每月${Math.ceil(gapNorm/cd.months)}分，先把基础题中档题的分拿稳，普高完全够得着。`}`,
+            `4. 给价值：好课在线是独立非营利教育机构，有出镜讲题、一对一诊断、报名后无限次回放。先给孩子安排一节诊断，把薄弱点定位准了再规划，您看这周还是下周方便？`
+        ].join('\n');
+        navigator.clipboard.writeText(lines).then(()=>{
+            alert('话术已复制，可直接粘贴到聊天里给老师用 🙌');
+        }).catch(()=>{
+            // fallback
+            const ta=document.createElement('textarea'); ta.value=lines; document.body.appendChild(ta); ta.select();
+            try{document.execCommand('copy'); alert('话术已复制 ✅');}catch(e){alert('复制失败，请手动选择文本');}
+            document.body.removeChild(ta);
+        });
     }
     </script>
 </body>
